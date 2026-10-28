@@ -1,0 +1,1963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+<title>GirlsConnect</title>
+<meta name="description" content="यहाँ पर दुनिया भर के लोगों से डायरेक्ट व्हाट्सएप पर चैट करें">
+<meta name="theme-color" content="#b44cff">
+
+<!-- App (PWA) -->
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="GirlsConnect">
+
+<!-- WhatsApp / social share preview.
+     NOTE: og:image aur og:url me apna asli domain rakhein (abhi Cloudflare Pages: girlsconnect.pages.dev) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GirlsConnect">
+<meta property="og:title" content="GirlsConnect">
+<meta property="og:description" content="यहाँ पर दुनिया भर के लोगों से डायरेक्ट व्हाट्सएप पर चैट करें">
+<meta property="og:url" content="https://girlsconnect.pages.dev/">
+<meta property="og:image" content="https://girlsconnect.pages.dev/og-image.png?v=3">
+<meta property="og:image:secure_url" content="https://girlsconnect.pages.dev/og-image.png?v=3">
+<meta property="og:image:alt" content="GirlsConnect logo">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GirlsConnect">
+<meta name="twitter:description" content="यहाँ पर दुनिया भर के लोगों से डायरेक्ट व्हाट्सएप पर चैट करें">
+<meta name="twitter:image" content="https://girlsconnect.pages.dev/og-image.png?v=3">
+
+<script>
+  /* install prompt jaldi pakad lo (module script se pehle) */
+  window.__installPrompt = null;
+  window.addEventListener("beforeinstallprompt", function(e){ e.preventDefault(); window.__installPrompt = e; });
+</script>
+<style>
+  :root{
+    --pink:#ff4d8d; --rose:#ff7eb3; --purple:#7b2ff7; --dark:#1b1030; --card:#ffffff; --muted:#6f6783;
+    --grad:linear-gradient(135deg,#ff4d8d 0%,#b44cff 100%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:#f7f2fb;color:var(--dark);min-height:100vh}
+  .screen{display:none;min-height:100vh;animation:fade .35s ease}
+  .boot .screen{animation:none}
+  html,body{touch-action:pan-x pan-y;-webkit-text-size-adjust:100%}
+  .screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  button{font-family:inherit;cursor:pointer;border:none}
+
+  /* HERO */
+  #hero{background:radial-gradient(circle at 20% 15%,#ff9ac1 0,transparent 45%),radial-gradient(circle at 85% 80%,#9f6bff 0,transparent 50%),linear-gradient(160deg,#2a0f4a,#6a1b9a 55%,#c2185b);color:#fff;position:relative;overflow:hidden}
+  #hero.active{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+  .float-heart{position:absolute;bottom:-40px;font-size:22px;opacity:.5;animation:rise linear infinite;pointer-events:none}
+  @keyframes rise{to{transform:translateY(-115vh) rotate(25deg);opacity:0}}
+  .brand{font-size:18px;letter-spacing:3px;text-transform:uppercase;opacity:.9;margin-bottom:10px;font-weight:600}
+  .couple{width:min(380px,86vw);filter:drop-shadow(0 18px 30px rgba(0,0,0,.35));margin:6px 0 10px}
+  #hero h1{font-size:clamp(28px,6vw,48px);line-height:1.15;margin:8px 0 8px;font-weight:800}
+  #hero p{max-width:420px;opacity:.88;margin-bottom:26px;line-height:1.5}
+  .btn-main{background:var(--grad);color:#fff;font-size:18px;font-weight:700;padding:15px 52px;border-radius:50px;box-shadow:0 10px 26px rgba(255,77,141,.45);transition:transform .15s}
+  .btn-main:active{transform:scale(.96)}
+  .btn-main:hover{transform:translateY(-2px)}
+
+  /* TOP BAR */
+  .topbar{background:var(--grad);color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5;box-shadow:0 4px 16px rgba(123,47,247,.3)}
+  .topbar h2{font-size:21px;font-weight:800}
+  .topbar .me{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.18);padding:4px 12px 4px 4px;border-radius:30px;cursor:pointer;font-size:14px;font-weight:600}
+  .topbar .me img{width:30px;height:30px;border-radius:50%;background:#fff}
+  .back{background:rgba(255,255,255,.2);color:#fff;width:38px;height:38px;border-radius:50%;font-size:20px}
+
+  /* FORM */
+  #register{background:linear-gradient(160deg,#fbeaff,#ffe3ef)}
+  #register.active{display:flex;align-items:center;justify-content:center;padding:20px}
+  .form-card{background:var(--card);width:100%;max-width:440px;border-radius:26px;padding:26px 22px 24px;box-shadow:0 20px 50px rgba(123,47,247,.18)}
+  .form-card h2{text-align:center;font-size:24px;margin-bottom:4px}
+  .form-card .sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:18px}
+  label.l{display:block;font-size:13px;font-weight:700;color:#4a3d63;margin:14px 0 6px}
+  input[type=text],input[type=tel],select{width:100%;padding:13px 14px;border:2px solid #eadff5;border-radius:12px;font-size:16px;background:#fcfaff;outline:none;font-family:inherit;transition:border .2s}
+  input:focus,select:focus{border-color:var(--pink)}
+  .gender-row{display:flex;gap:12px}
+  .gender-opt{flex:1}
+  .gender-opt input{display:none}
+  .gender-opt span{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border:2px solid #eadff5;border-radius:12px;font-weight:700;cursor:pointer;background:#fcfaff;transition:.2s}
+  .gender-opt input:checked + span{border-color:var(--pink);background:#fff0f6;color:var(--pink);box-shadow:0 4px 14px rgba(255,77,141,.2)}
+  .avatar-box{display:none;flex-direction:column;align-items:center;margin:16px 0 4px;gap:10px}
+  .avatar-box.show{display:flex}
+  .avatar-box img{width:104px;height:104px;border-radius:50%;border:4px solid #fff;box-shadow:0 0 0 3px var(--pink),0 10px 22px rgba(0,0,0,.15);background:#fff}
+  .btn-swap{background:#f3e8ff;color:var(--purple);padding:9px 20px;border-radius:30px;font-weight:700;font-size:14px}
+  .btn-swap:active{transform:scale(.95)}
+  .err{color:#d6204f;font-size:13px;margin-top:10px;min-height:18px;text-align:center;font-weight:600}
+  .btn-join{width:100%;margin-top:10px;background:var(--grad);color:#fff;font-size:18px;font-weight:800;padding:15px;border-radius:14px;box-shadow:0 10px 22px rgba(255,77,141,.35)}
+  .link-btn{display:block;margin:14px auto 0;background:none;color:var(--muted);font-size:14px}
+
+  /* HOME */
+  #home{padding-bottom:calc(104px + env(safe-area-inset-bottom))}
+  .list-wrap{max-width:900px;margin:0 auto;padding:0 14px 18px}
+  /* All/Latest bar: neeche scroll par chhup jaata hai, halka sa upar scroll karte hi turant wapas aata hai */
+  .list-head{display:flex;justify-content:space-between;align-items:baseline;position:sticky;top:var(--tbh,64px);z-index:4;margin:0 -14px 0;padding:10px 14px;background:#f7f2fb;will-change:transform}
+  .tabs{display:flex;gap:10px;width:100%}
+  .tab{flex:1;padding:12px 10px;border-radius:14px;font-size:16px;font-weight:800;background:#fff;color:var(--muted);border:2px solid #eadff5;transition:.2s}
+  .tab.active{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 8px 18px rgba(255,77,141,.3)}
+  .tab:disabled{opacity:.75}
+  .status{text-align:center;font-size:13px;font-weight:700;color:var(--purple);margin:0 0 6px}
+  .status:empty{display:none}
+  .more-wrap{text-align:center;margin-top:18px}
+  .btn-more{background:#f3e8ff;color:var(--purple);font-weight:800;padding:12px 30px;border-radius:30px;font-size:15px}
+
+  /* Hero share */
+
+  /* Install help (Android bottom sheet) */
+  .modal{position:fixed;inset:0;background:rgba(20,8,40,.55);display:none;align-items:flex-end;justify-content:center;z-index:50}
+  .modal.show{display:flex}
+  .modal-box{background:#fff;border-radius:28px 28px 0 0;max-width:480px;width:100%;padding:12px 22px calc(22px + env(safe-area-inset-bottom));text-align:left;animation:sheet .28s cubic-bezier(.2,.8,.2,1)}
+  @keyframes sheet{from{transform:translateY(100%)}to{transform:none}}
+  .modal-box .grab{width:40px;height:4px;border-radius:4px;background:#ddd2ea;margin:0 auto 16px}
+  .modal-box img{width:64px;height:64px;border-radius:16px;display:block;margin:0 auto 10px}
+  .modal-box h3{text-align:center;font-size:20px;margin-bottom:12px}
+  .modal-box p{font-size:14.5px;line-height:1.55;color:#3f3355;margin-bottom:10px}
+  .modal-box .btn-main{width:100%;padding:14px;font-size:16px;margin-top:6px;border-radius:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+  .card{background:var(--card);border-radius:20px;padding:20px 14px 16px;text-align:center;box-shadow:0 8px 22px rgba(80,40,120,.1);animation:fade .4s ease;transition:transform .2s}
+  .card:hover{transform:translateY(-4px)}
+  .card img{width:96px;height:96px;border-radius:50%;cursor:pointer;border:3px solid #fff;box-shadow:0 0 0 3px #ffc2da;background:#fff;transition:.2s}
+  .card img:hover{box-shadow:0 0 0 3px var(--pink)}
+  .card .nm{font-weight:800;font-size:17px;margin-top:12px;word-break:break-word}
+  .tag{display:inline-block;margin:6px 0 12px;padding:3px 12px;border-radius:20px;font-size:12px;font-weight:700}
+  .tag.f{background:#ffe4ef;color:#d81b60}
+  .tag.m{background:#e3efff;color:#1565c0}
+  .btn-chat{width:100%;background:#25d366;color:#fff;font-weight:800;padding:11px;border-radius:12px;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+  .btn-chat:active{transform:scale(.97)}
+  .btn-chat .wa-ic{width:26px;height:26px;border-radius:50%;background:#fff;display:grid;place-items:center;flex-shrink:0}
+  .btn-chat .wa-ic svg{width:17px;height:17px;fill:#25d366}
+  .empty{text-align:center;color:var(--muted);padding:60px 20px;grid-column:1/-1}
+  .empty b{display:block;font-size:44px;margin-bottom:8px}
+
+
+  /* Bottom navigation (Members / Groups) */
+  .bnav{will-change:transform;position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -6px 24px rgba(80,40,120,.14);padding:8px 10px calc(8px + env(safe-area-inset-bottom))}
+  .bnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;color:var(--muted);font-size:12px;font-weight:700;padding:0}
+  .bnav .pill{width:66px;height:32px;border-radius:16px;display:grid;place-items:center;transition:background .2s,color .2s}
+  .bnav svg{width:24px;height:24px;fill:currentColor}
+  .bnav button{position:relative}
+  .nbadge{display:none;position:absolute;top:-3px;left:calc(50% + 6px);width:11px;height:11px;border-radius:50%;background:#ff2d2d;border:2px solid #fff;box-sizing:content-box;pointer-events:none;animation:nbPulse 1.6s ease-out infinite}
+  @keyframes nbPulse{0%{box-shadow:0 0 0 0 rgba(255,45,45,.55)}70%{box-shadow:0 0 0 8px rgba(255,45,45,0)}100%{box-shadow:0 0 0 0 rgba(255,45,45,0)}}
+  .bnav button.active{color:#7b2ff7}
+  .bnav button.active .pill{background:#efe4ff}
+  .bnav button:active .pill{background:#e4d4ff}
+
+  /* Groups */
+  .g-intro{font-size:14px;font-weight:700;color:var(--muted);padding:12px 4px 10px}
+  .ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+  .gcard{background:var(--card);border-radius:20px;padding:16px;box-shadow:0 8px 22px rgba(80,40,120,.1);animation:fade .4s ease}
+  .g-top{display:flex;align-items:center;gap:12px}
+  .g-ic{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;flex-shrink:0;color:#fff}
+  .g-ic svg{width:28px;height:28px;fill:#fff}
+  .g-info{min-width:0;flex:1}
+  .g-name{font-weight:800;font-size:17px;word-break:break-word;line-height:1.25}
+  .g-chip{display:inline-block;margin-top:5px;padding:2px 10px;border-radius:20px;font-size:11.5px;font-weight:800;color:#fff}
+  .pl-whatsapp{background:#25d366}.pl-telegram{background:#229ed9}.pl-discord{background:#5865f2}
+  .pl-instagram{background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af)}.pl-facebook{background:#1877f2}
+  .pl-link{background:linear-gradient(135deg,#ff4d8d,#b44cff)}
+  .g-desc{margin-top:12px;font-size:14px;line-height:1.5;color:#3f3355;word-break:break-word;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .g-by{margin-top:10px;font-size:12px;color:var(--muted);font-weight:600}
+  .g-actions{display:flex;gap:10px;margin-top:14px}
+  .btn-gjoin{flex:1.7;background:var(--grad);color:#fff;font-weight:800;padding:12px;border-radius:14px;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;box-shadow:0 8px 18px rgba(180,76,255,.28)}
+  .btn-gshare{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;background:#e8fbf0;color:#0f9d58;font-weight:800;font-size:15px;padding:12px;border-radius:14px;border:2px solid #bff0d3;transition:transform .15s}
+  .btn-gshare:active{transform:scale(.96)}
+  .btn-gshare svg{width:19px;height:19px;fill:currentColor}
+  .gcard.gshared{box-shadow:0 0 0 2.5px #ff4d8d,0 12px 28px rgba(255,77,141,.22)}
+  .g-badge{display:inline-block;margin-bottom:10px;padding:3px 11px;border-radius:20px;font-size:12px;font-weight:800;background:#ffe4ef;color:#d81b60}
+  .btn-gjoin:active{transform:scale(.97)}
+  .btn-gjoin svg{width:20px;height:20px;fill:#fff}
+  .fab{will-change:transform;position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:19;display:none;align-items:center;gap:8px;background:var(--grad);color:#fff;font-weight:800;font-size:15px;padding:14px 20px 14px 16px;border-radius:18px;box-shadow:0 12px 26px rgba(123,47,247,.4);transition:transform .15s}
+  .fab:active{transform:scale(.95)}
+  .fab svg{width:22px;height:22px;fill:#fff}
+
+  /* Join button glow (share-link se aane par 3-4 second) */
+  @keyframes gglow{
+    0%,100%{box-shadow:0 8px 18px rgba(180,76,255,.28),0 0 0 0 rgba(255,77,141,.0);transform:scale(1)}
+    50%{box-shadow:0 0 28px 10px rgba(255,77,141,.8),0 0 0 5px rgba(255,255,255,.95);transform:scale(1.04)}
+  }
+  .btn-gjoin.glow{animation:gglow .9s ease-in-out infinite}
+
+  /* Add group page */
+  #addGroup{background:#f4eefb;padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+  .ag-bar{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(150deg,#ff4d8d 0%,#b44cff 60%,#7b2ff7 100%);border-radius:0 0 28px 28px;padding:calc(14px + env(safe-area-inset-top)) 16px 20px;color:#fff;box-shadow:0 10px 24px rgba(123,47,247,.25)}
+  .ag-bar .pf-title{font-size:18px;font-weight:700;letter-spacing:.3px}
+  .ag-bar .sp{width:44px}
+  .ag-body{max-width:480px;margin:0 auto;padding:22px 16px 0}
+  .ag-card{background:#fff;border-radius:22px;padding:18px 16px 8px;box-shadow:0 8px 26px rgba(80,40,120,.08)}
+  .ag-note{font-size:13px;color:var(--muted);font-weight:600;text-align:center;margin:14px 6px 12px;line-height:1.5}
+  .ag-body .btn-main{width:100%;padding:15px;font-size:17px;border-radius:16px}
+
+  /* (old) Add group sheet */
+  .g-field{display:block;width:100%;margin-bottom:12px}
+  .g-field label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin:0 0 5px 2px}
+  .g-field input,.g-field textarea{width:100%;padding:13px 14px;border-radius:14px;border:2px solid #eadff5;font:inherit;font-size:16px;background:#faf7fe;color:var(--dark);outline:none;resize:none}
+  .g-field input:focus,.g-field textarea:focus{border-color:var(--pink);background:#fff}
+  .g-err{color:#d6204f;font-size:13.5px;font-weight:700;min-height:18px;text-align:center;margin-bottom:6px}
+
+  /* PROFILE (modern, native-android style) */
+  #profile{background:#f4eefb;padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+  .pf-hero{position:relative;height:220px;background:linear-gradient(150deg,#ff4d8d 0%,#b44cff 60%,#7b2ff7 100%);border-radius:0 0 38px 38px;overflow:hidden}
+  .pf-hero::before,.pf-hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.14)}
+  .pf-hero::before{width:220px;height:220px;top:-90px;right:-60px}
+  .pf-hero::after{width:150px;height:150px;bottom:-60px;left:-40px}
+  .pf-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:calc(14px + env(safe-area-inset-top)) 16px 0;color:#fff}
+  .pf-back{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:#fff;background:rgba(255,255,255,.2);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.35);box-shadow:0 4px 14px rgba(60,10,100,.18);transition:transform .15s,background .2s}
+  .pf-back:active{transform:scale(.9);background:rgba(255,255,255,.34)}
+  .pf-back svg{width:24px;height:24px;fill:currentColor}
+  .pf-title{font-size:18px;font-weight:700;letter-spacing:.3px}
+  .pf-bar .sp{width:44px}
+  .pf-avatar{display:flex;justify-content:center;margin-top:-72px;position:relative;z-index:3}
+  .pf-avatar img{width:136px;height:136px;border-radius:50%;border:5px solid #fff;background:#fff;box-shadow:0 14px 30px rgba(80,30,130,.28)}
+  .pf-body{max-width:480px;margin:0 auto;padding:0 16px}
+  .pf-id{text-align:center;padding:12px 0 4px}
+  .pf-id h2{font-size:26px;font-weight:800;word-break:break-word}
+  .pf-id .tag{margin:8px 0 0}
+  .sec-label{font-size:12px;font-weight:800;letter-spacing:1.2px;color:#8a7fa3;text-transform:uppercase;margin:22px 6px 8px}
+  .pf-sec{background:#fff;border-radius:22px;box-shadow:0 8px 26px rgba(80,40,120,.08);overflow:hidden}
+  .pf-item{display:flex;align-items:center;gap:14px;padding:13px 16px;border-bottom:1px solid #f3ecfa}
+  .pf-item:last-child{border-bottom:none}
+  .pf-item .ic{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;flex-shrink:0}
+  .pf-item .ic svg{width:22px;height:22px;fill:currentColor}
+  .pf-item .ic.c1{background:#ffe4ef;color:#e0306f}
+  .pf-item .ic.c2{background:#e8e0ff;color:#6c3fe0}
+  .pf-item .ic.c3{background:#dff7e8;color:#16a34a}
+  .pf-item .ic.c4{background:#e0efff;color:#1d6fd6}
+  .pf-item .tx{min-width:0;flex:1}
+  .pf-item .tx small{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:1px}
+  .pf-item .tx b{display:block;font-size:16px;font-weight:700;word-break:break-word}
+  .app-btn{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;width:100%;padding:12px 16px;border-radius:20px;color:#fff;text-align:left;text-decoration:none;transition:transform .15s}
+  .app-btn::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,0);transition:background .15s}
+  .app-btn:active{transform:scale(.98)}
+  .app-btn:active::after{background:rgba(255,255,255,.16)}
+  .app-btn .ico{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.22);display:grid;place-items:center;flex-shrink:0}
+  .app-btn .ico svg{width:24px;height:24px;fill:#fff}
+  .app-btn .tx{flex:1;min-width:0}
+  .app-btn .tx b{display:block;font-size:16px;font-weight:800}
+  .app-btn .tx small{display:block;font-size:12.5px;opacity:.88;margin-top:1px;font-weight:500}
+  .app-btn .chev{width:22px;height:22px;fill:#fff;opacity:.9;flex-shrink:0}
+  .app-btn + .app-btn{margin-top:12px}
+  .ab-share{background:linear-gradient(135deg,#25d366,#0f9d58);box-shadow:0 10px 22px rgba(37,211,102,.32)}
+  .ab-install{background:linear-gradient(135deg,#7b2ff7,#b44cff);box-shadow:0 10px 22px rgba(123,47,247,.32)}
+  .ab-chat{background:linear-gradient(135deg,#25d366,#0f9d58);box-shadow:0 10px 22px rgba(37,211,102,.32)}
+  .btn-logout{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:22px;padding:15px;border-radius:18px;background:#fff0f3;color:#d6204f;font-weight:800;font-size:16px;border:1.5px solid #ffd0db;transition:transform .15s,background .2s}
+  .btn-logout:active{transform:scale(.98);background:#ffe1e8}
+  .btn-logout svg{width:22px;height:22px;fill:currentColor}
+  .own-only,.other-only{display:none}
+  .is-own .own-only{display:block}
+  .is-other .other-only{display:block}
+
+  /* Boot loader (returning user) */
+  #boot{background:#f7f2fb}
+  #boot.active{display:flex;align-items:center;justify-content:center}
+  .spin{width:42px;height:42px;border-radius:50%;border:4px solid #eadff5;border-top-color:var(--pink);animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ===== Verify (Instagram jaisa) ===== */
+  .topbar{gap:8px;padding:12px 14px}
+  .topbar h2{font-size:19px;white-space:nowrap}
+  .tb-right{display:flex;align-items:center;gap:8px;min-width:0}
+  .vbtn{display:flex;align-items:center;gap:5px;background:#fff;color:#1b1030;font-weight:800;font-size:13px;padding:6px 11px 6px 7px;border-radius:30px;box-shadow:0 3px 10px rgba(60,10,100,.18);white-space:nowrap}
+  .vbtn svg{width:19px;height:19px}
+  .vbtn:active{transform:scale(.95)}
+  .topbar .me span{max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  @media (max-width:410px){ .topbar .me span{display:none} .topbar .me{padding:3px} }
+  .vb{width:1.05em;height:1.05em;display:inline-block;vertical-align:-.17em;margin-left:4px;flex-shrink:0}
+  .card.me-card{grid-column:1/-1;border:2px solid #b44cff33;background:linear-gradient(180deg,#fff,#faf3ff)}
+  .card.me-card .you-tag{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:12px;font-size:11px;font-weight:800;background:#efe3ff;color:#7b2ff7;vertical-align:middle}
+  .btn-me{width:100%;background:linear-gradient(135deg,#ff4d8d 0%,#b44cff 100%);color:#fff;font-weight:800;padding:11px;border-radius:12px;font-size:15px}
+  .boost-tag{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:12px;font-size:11px;font-weight:800;background:#fff4d6;color:#b7791f;vertical-align:middle}
+  .ab-verify{background:linear-gradient(135deg,#3897f0,#7b2ff7);box-shadow:0 10px 22px rgba(56,151,240,.32)}
+  #verify{background:#fff;color:#262626;padding-bottom:calc(30px + env(safe-area-inset-bottom))}
+  .vf-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid #dbdbdb;padding:calc(10px + env(safe-area-inset-top)) 12px 10px}
+  .vf-back{width:40px;height:40px;border-radius:50%;background:none;display:grid;place-items:center;color:#262626}
+  .vf-back svg{width:26px;height:26px;fill:currentColor}
+  .vf-back:active{background:#efefef}
+  .vf-title{font-size:16px;font-weight:700}
+  .vf-bar .sp{width:40px}
+  .vf-body{max-width:480px;margin:0 auto;padding:0 16px}
+  .vf-head{text-align:center;padding:22px 0 8px}
+  .vf-ring{width:112px;height:112px;margin:0 auto;border-radius:50%;padding:4px;background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)}
+  .vf-ring img{width:100%;height:100%;border-radius:50%;border:4px solid #fff;background:#fff;display:block}
+  .vf-name{font-size:21px;font-weight:800;margin-top:12px;word-break:break-word}
+  .vf-sub{font-size:13.5px;color:#737373;margin-top:2px}
+  .vf-state{display:flex;align-items:center;gap:10px;border-radius:14px;padding:12px 14px;margin-top:14px;font-size:14px;font-weight:700;line-height:1.4}
+  .vf-state svg{width:22px;height:22px;flex-shrink:0}
+  .vf-state.ok{background:#e8f3ff;color:#0a5fb4}
+  .vf-state.boost{background:#fff4d6;color:#8a5a00}
+  .vf-state.todo{background:#f5f5f5;color:#404040}
+  .vf-card{border:1px solid #dbdbdb;border-radius:16px;padding:16px;margin-top:14px;background:#fff}
+  .vf-prog-top{display:flex;justify-content:space-between;align-items:baseline;font-size:15px}
+  .vf-prog-top span{font-size:12.5px;color:#737373;font-weight:600}
+  .vf-seg{display:flex;gap:6px;margin-top:12px}
+  .vf-seg i{flex:1;height:8px;border-radius:6px;background:#efefef}
+  .vf-seg i.on{background:linear-gradient(90deg,#f09433,#dc2743,#bc1888)}
+  .vf-friends{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+  .vf-friends:empty{display:none}
+  .vf-fr{width:52px;text-align:center;font-size:11px;font-weight:600;color:#404040}
+  .vf-fr img{width:46px;height:46px;border-radius:50%;display:block;margin:0 auto 3px;background:#f3ecfa}
+  .vf-fr span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .vf-rule-h{font-weight:800;font-size:15px;margin-bottom:8px}
+  .vf-rule p{font-size:14.5px;line-height:1.6;color:#262626}
+  .vf-rule ul{margin:10px 0 0 18px;font-size:13px;line-height:1.55;color:#555}
+  .vf-rule li{margin-top:4px}
+  .vf-lbl{font-size:12.5px;font-weight:700;color:#737373;margin-bottom:8px}
+  .vf-linkrow{display:flex;gap:8px}
+  .vf-linkrow input{flex:1;min-width:0;padding:11px 12px;border:1px solid #dbdbdb;border-radius:10px;font-size:13.5px;background:#fafafa;color:#262626;outline:none;font-family:inherit}
+  .vf-code{font-weight:800;letter-spacing:1.5px;font-size:16px !important}
+  .vf-copy{background:#0095f6;color:#fff;font-weight:800;font-size:14px;padding:0 16px;border-radius:10px}
+  .vf-copy:active{background:#1877f2}
+  .vf-share{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:16px;padding:15px;border-radius:14px;background:linear-gradient(135deg,#25d366,#0f9d58);color:#fff;font-size:16.5px;font-weight:800;box-shadow:0 10px 22px rgba(37,211,102,.3)}
+  .vf-share svg{width:22px;height:22px;fill:#fff}
+  .vf-share:active{transform:scale(.98)}
+
+  /* ===== Community (chat) ===== */
+  #community{position:fixed;left:0;right:0;top:0;bottom:0;min-height:0;max-height:100%;flex-direction:column;overflow:hidden;background:#f1eaf8;background-image:radial-gradient(rgba(123,47,247,.08) 1.3px,transparent 1.3px);background-size:18px 18px;z-index:30}
+  #community.active{display:flex}
+  .c-head{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#ff4d8d 0%,#b44cff 100%);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 12px 12px;box-shadow:0 4px 16px rgba(123,47,247,.3);flex-shrink:0}
+  .c-head .pf-back{width:40px;height:40px;flex-shrink:0}
+  .c-ic{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;flex-shrink:0}
+  .c-ic svg{width:24px;height:24px;fill:#fff}
+  .c-ttl{min-width:0}
+  .c-ttl b{display:block;font-size:18px;font-weight:800;line-height:1.2}
+  .c-ttl small{display:block;font-size:12.5px;opacity:.9;margin-top:1px}
+  .c-note{background:#fff8dc;border-bottom:1px solid #f1e3a6;color:#7a5b00;padding:8px 14px;text-align:center;flex-shrink:0}
+  .c-note b{display:block;font-size:13px;font-weight:800}
+  .c-note span{display:block;font-size:11.5px;margin-top:1px;opacity:.85}
+  .c-status{text-align:center;font-size:12px;font-weight:700;color:#d6204f;padding:0 12px;flex-shrink:0}
+  .c-status:empty{display:none}
+  .c-status{padding-top:6px}
+  .c-msgs{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:10px 10px 16px}
+  .c-empty{text-align:center;color:var(--muted);padding:60px 24px;font-weight:600;line-height:1.6}
+  .c-empty b{display:block;font-size:46px;margin-bottom:8px}
+  .c-day{text-align:center;margin:12px 0 8px}
+  .c-day span{display:inline-block;background:rgba(255,255,255,.92);color:#6f6783;font-size:12px;font-weight:700;padding:4px 14px;border-radius:14px;box-shadow:0 2px 6px rgba(80,40,120,.08)}
+  .c-row{display:flex;align-items:flex-end;gap:8px;margin-top:3px}
+  .c-row.first{margin-top:10px}
+  .c-row.own{justify-content:flex-end}
+  .c-av{width:32px;height:32px;border-radius:50%;background:#fff;flex-shrink:0;cursor:pointer;box-shadow:0 2px 6px rgba(80,40,120,.15)}
+  .c-av-sp{width:32px;flex-shrink:0}
+  .c-bub{max-width:78%;padding:7px 11px 5px;border-radius:18px;word-break:break-word;box-shadow:0 2px 6px rgba(80,40,120,.09)}
+  .c-row.other .c-bub{background:#fff;border-bottom-left-radius:6px;color:#1b1030}
+  .c-row.own .c-bub{background:linear-gradient(135deg,#ff4d8d 0%,#b44cff 100%);border-bottom-right-radius:6px;color:#fff}
+  .c-nm{font-size:13px;font-weight:800;margin-bottom:2px;cursor:pointer}
+  .c-nm .vb{width:14px;height:14px;margin-left:3px;vertical-align:-2px}
+  .c-tx{font-size:15.5px;line-height:1.4;white-space:pre-wrap}
+  .c-meta{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:2px;font-size:11px;opacity:.75}
+  .c-row.other .c-meta{color:#8a7fa3;opacity:1}
+  .c-rep{background:none;color:#b3a9c7;display:grid;place-items:center;width:20px;height:20px;border-radius:50%}
+  .c-rep svg{width:14px;height:14px;fill:currentColor}
+  .c-rep:active{background:#f3e8ff;color:#d6204f}
+  .c-new{position:absolute;right:14px;bottom:84px;display:none;background:#7b2ff7;color:#fff;font-weight:800;font-size:13px;padding:9px 16px;border-radius:20px;box-shadow:0 8px 20px rgba(123,47,247,.4)}
+  .c-bar{display:flex;align-items:flex-end;gap:10px;background:#fff;padding:10px 12px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -6px 20px rgba(80,40,120,.1);flex-shrink:0}
+  .c-box{flex:1;position:relative;background:#f3ecfa;border-radius:24px;border:2px solid transparent;transition:border .2s,background .2s}
+  .c-box:focus-within{background:#fff;border-color:#ffc2da}
+  .c-box textarea{display:block;width:100%;border:none;background:none;resize:none;outline:none;font:inherit;font-size:16px;line-height:1.35;padding:11px 16px;max-height:112px;color:#1b1030}
+  .c-cnt{position:absolute;right:12px;top:-18px;font-size:11px;font-weight:700;color:#d6204f}
+  .c-send{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#ff4d8d 0%,#b44cff 100%);display:grid;place-items:center;flex-shrink:0;box-shadow:0 8px 18px rgba(180,76,255,.4);transition:transform .15s,opacity .2s}
+  .c-send svg{width:23px;height:23px;fill:#fff;margin-left:2px}
+  .c-send:active{transform:scale(.92)}
+  .c-send:disabled{opacity:.4;box-shadow:none}
+  .toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:rgba(27,16,48,.92);color:#fff;font-size:14px;font-weight:600;padding:11px 18px;border-radius:24px;max-width:88vw;text-align:center;opacity:0;pointer-events:none;transition:.25s;z-index:60}
+  .toast.show{opacity:1;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<section id="hero" class="screen">
+  <div class="brand">💖 GirlsConnect</div>
+
+  <!-- Couple embracing illustration -->
+  <svg class="couple" viewBox="0 0 400 330" xmlns="http://www.w3.org/2000/svg" aria-label="Couple embracing">
+    <defs>
+      <linearGradient id="gl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd6e8"/><stop offset="1" stop-color="#ffb3d1"/></linearGradient>
+    </defs>
+    <circle cx="200" cy="165" r="150" fill="rgba(255,255,255,.12)"/>
+    <!-- heart above -->
+    <path d="M200 70c-14-26-52-14-44 14 6 20 30 34 44 46 14-12 38-26 44-46 8-28-30-40-44-14z" fill="url(#gl)" opacity=".95"/>
+    <!-- man (left) body -->
+    <path d="M70 330c0-70 18-120 70-130h40v130z" fill="#3a6bd8"/>
+    <!-- woman (right) body -->
+    <path d="M330 330c0-70-18-120-70-130h-40v130z" fill="#e8408a"/>
+    <!-- man's arm around her -->
+    <path d="M150 215c40 4 100 0 130 18l-6 26c-40-12-90-8-130-6z" fill="#2d56b5"/>
+    <!-- woman's arm around him -->
+    <path d="M250 225c-40 6-90 4-125 24l8 24c34-18 80-18 120-22z" fill="#c92d74"/>
+    <!-- heads -->
+    <ellipse cx="165" cy="150" rx="40" ry="44" fill="#f2c29b" transform="rotate(12 165 150)"/>
+    <ellipse cx="235" cy="150" rx="40" ry="44" fill="#f7cfae" transform="rotate(-12 235 150)"/>
+    <!-- man hair -->
+    <path d="M122 140c-2-40 28-60 62-52 30 6 44 24 38 44-12-18-30-24-52-22-22 2-36 14-48 30z" fill="#2b1a12"/>
+    <!-- woman hair -->
+    <path d="M278 140c2-42-26-62-60-54-26 6-38 22-36 40 10-18 30-24 50-20 20 4 34 16 46 34z" fill="#4a2318"/>
+    <path d="M278 140c4 40 6 80-6 100l-16-8c8-20 6-60 2-84z" fill="#4a2318"/>
+    <!-- closed happy eyes -->
+    <path d="M148 152q7 6 14 0M172 148q7 6 14 0" stroke="#3b2418" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M214 148q7 6 14 0M238 152q7 6 14 0" stroke="#3b2418" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <!-- smiles -->
+    <path d="M158 170q10 10 20 2" stroke="#b5483c" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M222 172q10 8 20-2" stroke="#d1456a" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <!-- blush -->
+    <circle cx="150" cy="166" r="7" fill="#ff8da1" opacity=".5"/><circle cx="250" cy="166" r="7" fill="#ff8da1" opacity=".5"/>
+  </svg>
+
+  <h1>Welcome GirlsConnect Family</h1>
+  <p>Meet new people, make friends and start a chat in just one tap.</p>
+  <button class="btn-main" id="startBtn">Start</button>
+</section>
+
+<!-- ============ REGISTER ============ -->
+<section id="register" class="screen">
+  <div class="form-card">
+    <h2>Create your profile</h2>
+    <div class="sub">Join the GirlsConnect family</div>
+
+    <label class="l" for="fName">Name</label>
+    <input type="text" id="fName" maxlength="30" placeholder="Enter your name" autocomplete="off">
+
+    <label class="l">Gender</label>
+    <div class="gender-row">
+      <label class="gender-opt"><input type="radio" name="gender" value="Male"><span>👨 Male</span></label>
+      <label class="gender-opt"><input type="radio" name="gender" value="Female"><span>👩 Female</span></label>
+    </div>
+
+    <div class="avatar-box" id="avatarBox">
+      <img id="avatarImg" alt="Avatar">
+      <button type="button" class="btn-swap" id="swapBtn">🔄 Change Avatar</button>
+    </div>
+
+    <label class="l" for="fCountry">Country</label>
+    <select id="fCountry"></select>
+
+    <label class="l" for="fMobile">Mobile Number</label>
+    <input type="tel" id="fMobile" inputmode="numeric" maxlength="15" placeholder="Mobile number (without country code)">
+
+    <label class="l" for="fRef">Referral Code (optional)</label>
+    <input type="text" id="fRef" maxlength="24" placeholder="दोस्त का रेफरल कोड, जैसे GC1234..." autocomplete="off" autocapitalize="characters">
+
+    <div class="err" id="formErr"></div>
+    <button class="btn-join" id="joinBtn">Join Now</button>
+    <button class="link-btn" id="backHero">← Back</button>
+  </div>
+</section>
+
+<!-- ============ HOME ============ -->
+<section id="home" class="screen">
+  <div class="topbar">
+    <h2>💖 GirlsConnect</h2>
+    <div class="tb-right">
+      <button class="vbtn" id="verifyBtn" aria-label="Verify"><svg class="vb" viewBox="0 0 24 24" aria-label="Verified"><path fill="#3897f0" d="M12 1.5l2.4 1.8 3-.2 1.2 2.7 2.7 1.2-.2 3L22.9 12l-1.8 2.4.2 3-2.7 1.2-1.2 2.7-3-.2L12 22.9l-2.4-1.8-3 .2-1.2-2.7-2.7-1.2.2-3L1.1 12l1.8-2.4-.2-3 2.7-1.2 1.2-2.7 3 .2z"/><path d="M7.7 12.3l3 3 5.6-6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>वेरिफाई</button>
+      <div class="me" id="meChip"><img id="meImg" alt=""><span id="meName"></span></div>
+    </div>
+  </div>
+  <div class="list-wrap">
+    <!-- Members -->
+    <div id="viewMembers">
+      <div class="list-head">
+        <div class="tabs">
+          <button class="tab active" id="tabAll">All</button>
+          <button class="tab" id="tabLatest">Latest</button>
+        </div>
+      </div>
+      <div class="status" id="syncStatus"></div>
+      <div class="grid" id="userGrid"></div>
+      <div class="more-wrap" id="moreWrap" style="display:none"><button class="btn-more" id="moreBtn">Show more</button></div>
+    </div>
+
+    <!-- Groups -->
+    <div id="viewGroups" style="display:none">
+      <div class="g-intro">Join groups shared by members</div>
+      <div class="status" id="gStatus"></div>
+      <div class="ggrid" id="groupGrid"></div>
+      <div class="more-wrap" id="gMoreWrap" style="display:none"><button class="btn-more" id="gMoreBtn">Show more</button></div>
+    </div>
+  </div>
+
+  <button class="fab" id="fabAdd" aria-label="Add group">
+    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Add Group
+  </button>
+
+  <nav class="bnav">
+    <button class="active" id="navMembers">
+      <span class="pill"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></span>Members
+    </button>
+    <button id="navGroups">
+      <span class="pill"><svg viewBox="0 0 24 24"><path d="M12 12.75c1.63 0 3.07.39 4.24.9 1.08.48 1.76 1.56 1.76 2.73V18H6v-1.61c0-1.18.68-2.26 1.76-2.73 1.17-.52 2.61-.91 4.24-.91zM4 13c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm1.13 1.1c-.37-.06-.74-.1-1.13-.1-.99 0-1.93.21-2.78.58C.48 14.9 0 15.62 0 16.43V18h4.5v-1.61c0-.83.23-1.61.63-2.29zM20 13c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm4 3.43c0-.81-.48-1.53-1.22-1.85-.85-.37-1.79-.58-2.78-.58-.39 0-.76.04-1.13.1.4.68.63 1.46.63 2.29V18H24v-1.57zM12 6c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/></svg></span>Groups
+    </button>
+    <button id="navCommunity">
+      <span class="nbadge" id="cBadge"></span>
+      <span class="pill"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg></span>Community
+    </button>
+  </nav>
+</section>
+
+<!-- Install help dialog (jab browser seedha install popup na de) -->
+<div class="modal" id="installModal">
+  <div class="modal-box">
+    <div class="grab"></div>
+    <img src="/icon-192.png" alt="GirlsConnect">
+    <h3>Install GirlsConnect App</h3>
+    <p><b>Android (Chrome):</b> ऊपर ⋮ मेन्यू खोलें → <b>"Install app"</b> या <b>"Add to Home screen"</b> दबाएँ।</p>
+    <p><b>iPhone (Safari):</b> नीचे Share बटन ⬆️ दबाएँ → <b>"Add to Home Screen"</b> चुनें।</p>
+    <p style="font-size:13px;color:#6f6783">Home screen पर यही GirlsConnect आइकन दिखेगा और ऐप की तरह खुलेगा।</p>
+    <button class="btn-main" id="installClose">OK</button>
+  </div>
+</div>
+
+<!-- ============ ADD GROUP (page) ============ -->
+<section id="addGroup" class="screen">
+  <div class="ag-bar">
+    <button class="pf-back" id="agBack" aria-label="Back">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <div class="pf-title">Add Group</div>
+    <span class="sp"></span>
+  </div>
+  <div class="ag-body">
+    <div class="ag-card">
+      <div class="g-field"><label for="gName">Group name</label><input id="gName" maxlength="60" placeholder="e.g. Friends Hub" autocomplete="off"></div>
+      <div class="g-field"><label for="gLink">Group link</label><input id="gLink" type="url" inputmode="url" maxlength="300" placeholder="https://chat.whatsapp.com/..." autocomplete="off"></div>
+      <div class="g-field"><label for="gDesc">Description (optional)</label><textarea id="gDesc" rows="3" maxlength="200" placeholder="What is this group about?"></textarea></div>
+    </div>
+    <div class="ag-note">You can add any group link — WhatsApp, Telegram, Discord and more.</div>
+    <div class="g-err" id="gErr"></div>
+    <button class="btn-main" id="gSubmit">Submit Group</button>
+  </div>
+</section>
+
+<!-- ============ VERIFY ============ -->
+<section id="verify" class="screen">
+  <div class="vf-bar">
+    <button class="vf-back" id="vfBack" aria-label="Back">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <div class="vf-title">वेरिफाई बैज</div>
+    <span class="sp"></span>
+  </div>
+  <div class="vf-body">
+    <div class="vf-head">
+      <div class="vf-ring"><img id="vfImg" alt=""></div>
+      <div class="vf-name" id="vfName"></div>
+      <div class="vf-sub">अपनी प्रोफाइल पर नीला <svg class="vb" viewBox="0 0 24 24" aria-label="Verified"><path fill="#3897f0" d="M12 1.5l2.4 1.8 3-.2 1.2 2.7 2.7 1.2-.2 3L22.9 12l-1.8 2.4.2 3-2.7 1.2-1.2 2.7-3-.2L12 22.9l-2.4-1.8-3 .2-1.2-2.7-2.7-1.2.2-3L1.1 12l1.8-2.4-.2-3 2.7-1.2 1.2-2.7 3 .2z"/><path d="M7.7 12.3l3 3 5.6-6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> पाएँ</div>
+    </div>
+    <div id="vfState"></div>
+
+    <div class="vf-card">
+      <div class="vf-prog-top"><b id="vfCount"></b><span>लक्ष्य: 5 दोस्त</span></div>
+      <div class="vf-seg" id="vfSeg"></div>
+      <div class="vf-friends" id="vfFriends"></div>
+    </div>
+
+    <div class="vf-card vf-rule">
+      <div class="vf-rule-h">इसे कैसे पाएँ?</div>
+      <p>WhatsApp पर अपने दोस्तों को शेयर करो। अगर आपकी लिंक से <b>5 दोस्त</b> जुड़ते हैं, तो आपकी प्रोफाइल पर <b>नीला ✔ बैज हमेशा के लिए</b> लगेगा और आपकी प्रोफाइल <b>24 घंटे तक सबसे ऊपर</b> रहेगी।</p>
+      <ul>
+        <li>टॉप पर रहने का यह मौका सिर्फ़ एक बार मिलता है। 24 घंटे बाद प्रोफाइल अपनी सामान्य जगह पर आ जाती है, पर नीला ✔ बैज हमेशा रहता है।</li>
+        <li>सिर्फ़ नए और असली सदस्य गिने जाते हैं। एक फोन या एक मोबाइल नंबर दोबारा नहीं गिना जाता।</li>
+      </ul>
+    </div>
+
+    <div class="vf-card">
+      <div class="vf-lbl">आपका रेफरल कोड</div>
+      <div class="vf-linkrow"><input id="vfLink" readonly class="vf-code"><button class="vf-copy" id="vfCopy">Copy</button></div>
+    </div>
+
+    <button class="vf-share" id="vfShare"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Share on WhatsApp</button>
+  </div>
+</section>
+
+<!-- ============ COMMUNITY (chat) ============ -->
+<section id="community" class="screen">
+  <div class="c-head">
+    <button class="pf-back" id="cBack" aria-label="Back">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <div class="c-ic"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+    <div class="c-ttl"><b>Community</b><small id="cSub"></small></div>
+  </div>
+  <div class="c-note"><b>🕛 मैसेज 12 घंटे में अपने-आप डिलीट हो जाते हैं।</b><span>सभ्य भाषा रखें। गंदे शब्द और लिंक मना हैं।</span></div>
+  <div class="c-status" id="cStatus"></div>
+  <div class="c-msgs" id="cMsgs"></div>
+  <button class="c-new" id="cNew">↓ नए मैसेज</button>
+  <div class="c-bar">
+    <div class="c-box">
+      <span class="c-cnt" id="cCnt"></span>
+      <textarea id="cInput" rows="1" maxlength="300" placeholder="मैसेज लिखें..." autocomplete="off"></textarea>
+    </div>
+    <button class="c-send" id="cSend" disabled aria-label="Send"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+  </div>
+</section>
+<div class="toast" id="toast"></div>
+
+<!-- ============ BOOT (returning user, sirf loader) ============ -->
+<section id="boot" class="screen"><div class="spin"></div></section>
+
+<!-- ============ PROFILE VIEW ============ -->
+<section id="profile" class="screen">
+  <div class="pf-hero">
+    <div class="pf-bar">
+      <button class="pf-back" id="profBack" aria-label="Back">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </button>
+      <div class="pf-title">Profile</div>
+      <span class="sp"></span>
+    </div>
+  </div>
+  <div class="pf-avatar"><img id="pfImg" alt=""></div>
+
+  <div class="pf-body" id="pfBody">
+    <div class="pf-id">
+      <h2 id="pfName"></h2>
+      <span class="tag" id="pfTag"></span>
+    </div>
+
+    <div class="sec-label">About</div>
+    <div class="pf-sec">
+      <div class="pf-item">
+        <div class="ic c1" id="pfGenderIc"></div>
+        <div class="tx"><small>Gender</small><b id="pfGender"></b></div>
+      </div>
+      <div class="pf-item">
+        <div class="ic c3"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
+        <div class="tx"><small>Mobile</small><b id="pfMobile"></b></div>
+      </div>
+      <div class="pf-item">
+        <div class="ic c4"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div>
+        <div class="tx"><small>Country</small><b id="pfCountry"></b></div>
+      </div>
+      <div class="pf-item">
+        <div class="ic c2"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg></div>
+        <div class="tx"><small>Joined</small><b id="pfJoined"></b></div>
+      </div>
+    </div>
+
+    <!-- Apni profile par: Share + Download App + Logout -->
+    <div class="own-only">
+      <div class="sec-label">App</div>
+      <button class="app-btn ab-verify" id="profVerify">
+        <span class="ico"><svg viewBox="0 0 24 24" aria-label="Verified"><path fill="#fff" d="M12 1.5l2.4 1.8 3-.2 1.2 2.7 2.7 1.2-.2 3L22.9 12l-1.8 2.4.2 3-2.7 1.2-1.2 2.7-3-.2L12 22.9l-2.4-1.8-3 .2-1.2-2.7-2.7-1.2.2-3L1.1 12l1.8-2.4-.2-3 2.7-1.2 1.2-2.7 3 .2z"/><path d="M7.7 12.3l3 3 5.6-6" stroke="#3897f0" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="tx"><b>Get Verified</b><small>5 दोस्त बुलाओ, नीला ✔ पाओ</small></span>
+        <svg class="chev" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+      </button>
+      <button class="app-btn ab-share" id="shareBtn">
+        <span class="ico"><svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg></span>
+        <span class="tx"><b>Share on WhatsApp</b><small>Invite your friends</small></span>
+        <svg class="chev" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+      </button>
+      <button class="app-btn ab-install" id="installBtn">
+        <span class="ico"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></span>
+        <span class="tx"><b>Download App</b><small>Add to your home screen</small></span>
+        <svg class="chev" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+      </button>
+      <button class="btn-logout" id="logoutBtn">
+        <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+        Logout
+      </button>
+    </div>
+
+    <!-- Dusre user ki profile par: Chat Now -->
+    <div class="other-only" style="margin-top:22px">
+      <a class="app-btn ab-chat" id="pfChat" target="_blank" rel="noopener">
+        <span class="ico"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></span>
+        <span class="tx"><b>Chat Now</b><small>Message on WhatsApp</small></span>
+        <svg class="chev" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ---------- Zoom lock (pinch / ctrl+scroll; double-tap CSS touch-action se band) ---------- */
+["gesturestart","gesturechange","gestureend"].forEach(ev =>
+  document.addEventListener(ev, e => e.preventDefault(), { passive:false }));
+document.addEventListener("touchmove", e => { if(e.touches && e.touches.length > 1) e.preventDefault(); }, { passive:false });
+document.addEventListener("wheel", e => { if(e.ctrlKey) e.preventDefault(); }, { passive:false });
+document.addEventListener("keydown", e => {
+  if((e.ctrlKey || e.metaKey) && ["+","-","=","0"].includes(e.key)) e.preventDefault();
+});
+
+/* Firebase CDN se tabhi load hota hai jab zarurat ho; isse app pehle khulta hai
+   (returning user ko shuruaati screen nahi dikhti). */
+const firebaseConfig = {
+  apiKey: "AIzaSyCVhHNtZum0DXRa-syl6ckHDl0zxioyw9U",
+  authDomain: "girlsconnect-590f8.firebaseapp.com",
+  projectId: "girlsconnect-590f8",
+  storageBucket: "girlsconnect-590f8.firebasestorage.app",
+  messagingSenderId: "322265065914",
+  appId: "1:322265065914:web:1529e3f6da93cfde8f9583"
+};
+let fbPromise = null;
+function getFB(){
+  if(!fbPromise){
+    fbPromise = Promise.all([
+      import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
+      import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js")
+    ]).then(([a, f]) => ({ ...f, fs: f.getFirestore(a.initializeApp(firebaseConfig)) }))
+      .catch(e => { fbPromise = null; throw e; });
+  }
+  return fbPromise;
+}
+
+/* ==========================================================
+   DATA LAYER  (Firebase + localStorage cache)
+   ----------------------------------------------------------
+   - Website khulte hi: Firebase se SIRF naye profiles aate hain
+     (createdAt > lastSync). Purane profiles localStorage se aate hain.
+   - "All"   : cache ke sabhi profiles (newest upar). Visit ke baad naye
+               users yahan apne-aap nahi aate.
+   - "Latest": jab user is tab ko dabaye tabhi Firebase se naye profiles
+               aate hain; ve Latest me bhi dikhte hain aur All ke top par
+               bhi judte hain, aur localStorage me save hote hain.
+   ========================================================== */
+const PAGE = 20;          // ek baar me kitne cards dikhane hain
+const FB_BATCH = 20;      // Firebase se ek baar me max itne profiles
+let oldestSync = 0;       // cache me sabse purane profile ka createdAt (ms)
+let hasMoreOld = false;   // Firebase me aur purane profiles baaki hain?
+const CACHE_KEY = "gc_cache_v1";
+let USERS = [];           // local cache: sabhi profiles (newest first)
+let lastSync = 0;         // Firebase se aaya sabse naya createdAt (ms)
+let sessionNew = [];      // is visit ke baad Latest se aaye naye profiles
+let activeTab = "all";    // "all" ya "latest"
+let shown = PAGE;
+
+const toMs = v => (typeof v === "number") ? v : (v && typeof v.toMillis === "function") ? v.toMillis() : 0;
+function sortUsers(){ USERS.sort((a, b) => b.createdAt - a.createdAt); }
+function loadCache(){
+  try{
+    const c = JSON.parse(localStorage.getItem(CACHE_KEY));
+    if(c && Array.isArray(c.users)){
+      USERS = c.users; lastSync = c.lastSync || 0; sortUsers();
+      if(typeof c.hasMoreOld === "boolean"){ hasMoreOld = c.hasMoreOld; oldestSync = c.oldestSync || 0; }
+      else{ hasMoreOld = false; oldestSync = USERS.length ? USERS[USERS.length - 1].createdAt : 0; }   // purana cache: sab pehle se saved
+    }
+  }catch(e){ USERS = []; lastSync = 0; }
+}
+function saveCache(){
+  try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ users: USERS, lastSync, oldestSync, hasMoreOld })); }
+  catch(e){ console.warn("cache save failed", e); }
+}
+
+const DB = {
+  SESSION_KEY: "gc_session",
+  getUsers(){ return USERS; },
+  async addUser(u){
+    // createdAt server time se (alag-alag phone ki clock ka farak na pade)
+    const F = await getFB();
+    await F.setDoc(F.doc(F.fs, "users", u.id), { ...u, createdAt: F.serverTimestamp() });
+    if(!USERS.some(x => x.id === u.id)){ USERS.push(u); sortUsers(); saveCache(); }
+    return u;
+  },
+  _take(snap, fresh){
+    snap.docs.forEach(d => {
+      const u = d.data();
+      u.id = u.id || d.id;
+      u.createdAt = toMs(u.createdAt);
+      if(u.createdAt > lastSync) lastSync = u.createdAt;
+      if(u.createdAt && (!oldestSync || u.createdAt < oldestSync)) oldestSync = u.createdAt;
+      if(!USERS.some(x => x.id === u.id)){ USERS.push(u); fresh.push(u); }
+    });
+  },
+  // Firebase se profiles 20-20 ke batch me (kabhi poori list ek saath nahi)
+  async fetchNew(){
+    const F = await getFB();
+    const col = F.collection(F.fs, "users");
+    const fresh = [];
+    if(!lastSync){
+      // cache khali: sirf sabse naye 20 profiles
+      const snap = await F.getDocs(F.query(col, F.orderBy("createdAt", "desc"), F.limit(FB_BATCH)));
+      this._take(snap, fresh);
+      hasMoreOld = snap.size >= FB_BATCH;
+    }else{
+      // cache ke baad jo naye aaye: 20-20 karke (max 5 batch = 100 ek sync me)
+      for(let i = 0; i < 5; i++){
+        const q = F.query(col, F.where("createdAt", ">", F.Timestamp.fromMillis(lastSync + 1)),
+                          F.orderBy("createdAt", "asc"), F.limit(FB_BATCH));
+        const snap = await F.getDocs(q);
+        this._take(snap, fresh);
+        if(snap.size < FB_BATCH) break;
+      }
+    }
+    if(fresh.length) sortUsers();
+    saveCache();
+    return fresh;
+  },
+  // "Show more" dabane par: cache ke sabse purane profile se aage ke 20 purane profiles
+  async fetchOlder(){
+    if(!hasMoreOld || !oldestSync) return [];
+    const F = await getFB();
+    const q = F.query(F.collection(F.fs, "users"), F.orderBy("createdAt", "desc"),
+                      F.startAfter(F.Timestamp.fromMillis(oldestSync + 1)), F.limit(FB_BATCH));
+    const snap = await F.getDocs(q);
+    const fresh = [];
+    this._take(snap, fresh);
+    hasMoreOld = snap.size >= FB_BATCH;
+    if(fresh.length) sortUsers();
+    saveCache();
+    return fresh;
+  },
+  getSession(){ return localStorage.getItem(this.SESSION_KEY); },
+  setSession(id){ localStorage.setItem(this.SESSION_KEY, id); },
+  clearSession(){ localStorage.removeItem(this.SESSION_KEY); }
+};
+
+/* ---------- Countries (dial codes for WhatsApp) ---------- */
+const COUNTRIES = [
+  ["India","91"],["Pakistan","92"],["Bangladesh","880"],["Nepal","977"],["Sri Lanka","94"],
+  ["United States","1"],["Canada","1"],["United Kingdom","44"],["Australia","61"],["New Zealand","64"],
+  ["United Arab Emirates","971"],["Saudi Arabia","966"],["Qatar","974"],["Kuwait","965"],["Oman","968"],
+  ["Singapore","65"],["Malaysia","60"],["Indonesia","62"],["Philippines","63"],["Thailand","66"],
+  ["Germany","49"],["France","33"],["Italy","39"],["Spain","34"],["Netherlands","31"],
+  ["Russia","7"],["Turkey","90"],["Egypt","20"],["South Africa","27"],["Nigeria","234"],
+  ["Kenya","254"],["Brazil","55"],["Mexico","52"],["Japan","81"],["China","86"],["South Korea","82"]
+];
+
+/* ---------- Avatar generator (offline SVG, gender based) ---------- */
+function rng(seed){ let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
+function pick(r, arr){ return arr[Math.floor(r() * arr.length)]; }
+
+function makeAvatar(gender, seed){
+  const r = rng(seed);
+  const skin = pick(r, ["#f8d9bd","#f5d0b0","#e8b58c","#d39b73","#c68642","#b9774f","#8d5a3b","#6f4529"]);
+  const bg   = pick(r, ["#ffd6e8","#d9ecff","#e6dcff","#d5f5e3","#fff0c2","#ffe0cc","#d6f2f7","#f3dcff"]);
+  const hairC= pick(r, ["#1c1210","#2a1a12","#3b2418","#5a3720","#8a5a2b","#b8862f","#2d2d3a","#6b4a2e"]);
+  const shirt= pick(r, ["#ff4d8d","#7b2ff7","#2d9cdb","#27ae60","#f2994a","#eb5757","#34495e","#16a085","#e67e22","#8e44ad"]);
+  const female = gender === "Female";
+  let back = "", front = "";
+  const H = `fill="${hairC}"`;
+
+  if(female){
+    const s = Math.floor(r()*6);
+    if(s === 0) back = `<path d="M22 86C14 40 26 12 50 12s36 28 28 74z" ${H}/>`;                                   // lambe baal
+    else if(s === 1) back = `<path d="M24 70C16 36 28 12 50 12s34 24 26 58z" ${H}/><circle cx="50" cy="9" r="9" ${H}/>`; // joora
+    else if(s === 2) back = `<path d="M20 78C12 36 26 12 50 12s38 24 30 66c-6-10-4-30-8-34H28c-4 4-2 24-8 34z" ${H}/>`;
+    else if(s === 3) back = `<path d="M24 62C18 30 30 12 50 12s32 18 26 50c-4 4-10 6-14 2H38c-4 4-10 2-14-2z" ${H}/>`; // bob
+    else if(s === 4) back = `<path d="M66 30c14 4 18 24 12 46-4 8-8 8-10 2 4-14 2-30-6-40z" ${H}/>`;                 // side choti
+    else back = `<g ${H}><circle cx="22" cy="42" r="10"/><circle cx="78" cy="42" r="10"/><circle cx="30" cy="26" r="11"/><circle cx="70" cy="26" r="11"/><circle cx="50" cy="14" r="12"/><circle cx="18" cy="58" r="9"/><circle cx="82" cy="58" r="9"/></g>`; // ghunghrale
+    front = s === 5
+      ? `<path d="M29 40c2-14 12-20 21-20s19 6 21 20c-8-6-14-8-21-8s-13 2-21 8z" ${H}/>`
+      : (s % 2 ? `<path d="M28 42c2-18 14-26 22-26s20 8 22 26c-6-8-16-8-22-12-6 6-14 4-22 12z" ${H}/>`
+               : `<path d="M28 42c2-18 14-26 22-26s20 8 22 26c-8-10-16-14-22-14s-14 4-22 14z" ${H}/>`);
+  } else {
+    const s = Math.floor(r()*7);
+    if(s === 0) front = `<path d="M28 40C26 22 36 14 50 14s24 8 22 26c-3-6-6-10-10-12-8 4-24 4-30 0-2 3-3 7-4 12z" ${H}/>`;                  // side-part
+    else if(s === 1) front = `<path d="M27 44C22 22 32 8 52 8c16 0 26 14 21 36-2-8-4-14-10-16-10 4-24 4-32-2-2 4-3 10-4 18z" ${H}/>`;     // quiff
+    else if(s === 2) front = `<path d="M28 40l2-12 5 6 5-14 6 12 6-14 5 14 5-8 3 14c-6-6-14-8-22-8s-16 2-20 4z" ${H}/>`;                    // spiky
+    else if(s === 3) front = `<g ${H}><circle cx="32" cy="32" r="9"/><circle cx="42" cy="23" r="10"/><circle cx="55" cy="21" r="10"/><circle cx="67" cy="29" r="9"/><circle cx="70" cy="40" r="6"/><circle cx="30" cy="42" r="6"/></g>`; // curly
+    else if(s === 4) front = `<path d="M30 38c0-12 8-18 20-18s20 6 20 18c-5-5-12-6-20-6s-15 1-20 6z" ${H}/>`;                                // buzz cut
+    else if(s === 5) front = `<path d="M26 46c-4-26 8-34 24-34s28 8 24 34c-3-10-6-16-12-18-6 6-20 4-26-2-4 4-8 10-10 20z" ${H}/>`;         // lamba fringe
+    else front = `<path d="M31 34c2-8 8-12 19-12s17 4 19 12c-6-3-12-4-19-4s-13 1-19 4z" ${H}/>`;                                          // chhota / thin
+  }
+  const sideburn = !female ? `<rect x="28.5" y="34" width="3.5" height="12" rx="1.5" ${H}/><rect x="68" y="34" width="3.5" height="12" rx="1.5" ${H}/>` : "";
+  const b = r();
+  let facial = "";
+  if(!female){
+    if(b < .14) facial = `<path d="M31 54c1 16 8 24 19 24s18-8 19-24c-4 6-10 8-19 8s-15-2-19-8z" ${H} opacity=".9"/>`;                      // poori dadhi
+    else if(b < .28) facial = `<path d="M40 58q10-6 20 0q-4 3-10 2q-6 1-10-2z" ${H}/>`;                                                  // moonchh
+    else if(b < .40) facial = `<path d="M33 56c2 12 8 18 17 18s15-6 17-18c-4 4-10 6-17 6s-13-2-17-6z" ${H} opacity=".35"/>`;              // halki dadhi
+  }
+  const lips = female ? "#d1456a" : "#a85a4a";
+  const lash = female ? `<path d="M37 47l-3-2M63 47l3-2" stroke="#222" stroke-width="1.6" stroke-linecap="round"/>` : "";
+  const brow = `<path d="M36 41q5-3 9 0M55 41q5-3 9 0" stroke="${hairC}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+  const glasses = r() < .25 ? `<g fill="none" stroke="#333" stroke-width="1.8"><circle cx="41" cy="48" r="6.5"/><circle cx="59" cy="48" r="6.5"/><path d="M47.5 48h5"/></g>` : "";
+  const mouth = (r() < .5)
+    ? `<path d="M43 60q7 6 14 0" stroke="${lips}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`
+    : `<path d="M42 59q8 9 16 0z" fill="${female ? "#e0577d" : "#8f4a3c"}"/>`;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="${bg}"/>
+    ${back}
+    <path d="M10 100c2-20 18-28 40-28s38 8 40 28z" fill="${shirt}"/>
+    <rect x="43" y="62" width="14" height="14" rx="5" fill="${skin}"/>
+    <ellipse cx="29" cy="48" rx="3.5" ry="5" fill="${skin}"/><ellipse cx="71" cy="48" rx="3.5" ry="5" fill="${skin}"/>
+    <ellipse cx="50" cy="46" rx="21" ry="24" fill="${skin}"/>
+    ${facial}${sideburn}${front}${brow}
+    <circle cx="41" cy="48" r="2.6" fill="#222"/><circle cx="59" cy="48" r="2.6" fill="#222"/>
+    ${lash}${glasses}
+    ${mouth}
+    <circle cx="35" cy="56" r="4" fill="#ff8da1" opacity=".3"/><circle cx="65" cy="56" r="4" fill="#ff8da1" opacity=".3"/>
+  </svg>`;
+}
+function avatarURI(gender, seed){
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(makeAvatar(gender, seed));
+}
+
+/* ---------- Helpers ---------- */
+const $ = id => document.getElementById(id);
+function show(id){
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  $(id).classList.add("active");
+  window.scrollTo(0,0);
+  if(id !== "community" && typeof kbOverlay === "function") kbOverlay(false);
+}
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function waLink(u){
+  const num = (u.dial + String(u.mobile).replace(/\D/g,"").replace(/^0+/,""));
+  return "https://wa.me/" + num + "?text=" + encodeURIComponent("Hi " + u.name + ", I found you on GirlsConnect 👋");
+}
+function fmtDate(ts){
+  return new Date(ts).toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"});
+}
+function getUser(id){ return DB.getUsers().find(u => u.id === id); }
+
+/* ---------- Floating hearts on hero ---------- */
+(function(){
+  const hero = $("hero");
+  for(let i=0;i<14;i++){
+    const h = document.createElement("div");
+    h.className = "float-heart";
+    h.textContent = ["💗","💖","💕","✨"][i%4];
+    h.style.left = Math.random()*100 + "%";
+    h.style.fontSize = (14 + Math.random()*22) + "px";
+    h.style.animationDuration = (8 + Math.random()*10) + "s";
+    h.style.animationDelay = (-Math.random()*12) + "s";
+    hero.appendChild(h);
+  }
+})();
+
+/* ---------- Registration form ---------- */
+const countrySel = $("fCountry");
+COUNTRIES.forEach(([n,d]) => {
+  const o = document.createElement("option");
+  o.value = n; o.textContent = `${n} (+${d})`;
+  countrySel.appendChild(o);
+});
+countrySel.value = "India";
+
+let curGender = "", curSeed = 0;
+function refreshAvatar(){
+  $("avatarImg").src = avatarURI(curGender, curSeed);
+  $("avatarBox").classList.add("show");
+}
+document.querySelectorAll('input[name="gender"]').forEach(r => {
+  r.addEventListener("change", () => {
+    curGender = r.value;
+    curSeed = Math.floor(Math.random()*1e9);   // gender chunte hi random avatar
+    refreshAvatar();
+  });
+});
+$("swapBtn").onclick = () => { curSeed = Math.floor(Math.random()*1e9); refreshAvatar(); };
+
+$("startBtn").onclick = () => show("register");
+$("backHero").onclick = () => show("hero");
+
+$("joinBtn").onclick = async () => {
+  const name = $("fName").value.trim();
+  const country = $("fCountry").value;
+  const mobile = $("fMobile").value.replace(/\D/g,"");
+  const err = $("formErr");
+  err.textContent = "";
+
+  if(name.length < 2){ err.textContent = "Please enter your name."; return; }
+  if(!curGender){ err.textContent = "Please select your gender."; return; }
+  if(mobile.length < 6 || mobile.length > 15){ err.textContent = "Please enter a valid mobile number."; return; }
+  const rc = $("fRef").value.trim();
+  if(rc && !codeToId(rc)){ err.textContent = "Referral code is not valid."; return; }
+
+  const dial = COUNTRIES.find(c => c[0] === country)[1];
+  const user = {
+    id: "u" + Date.now() + Math.floor(Math.random()*1000),
+    name, gender: curGender, mobile, country, dial,
+    avatarSeed: curSeed,
+    referredBy: getRefForNewUser(),
+    devId: getDevId(),
+    createdAt: Date.now()
+  };
+  const btn = $("joinBtn");
+  btn.disabled = true; btn.textContent = "Please wait...";
+  try{
+    await DB.addUser(user);
+  }catch(e){
+    console.error(e);
+    err.textContent = "Could not save. Check internet and Firestore rules.";
+    btn.disabled = false; btn.textContent = "Join Now";
+    return;
+  }
+  btn.disabled = false; btn.textContent = "Join Now";
+  DB.setSession(user.id);
+  rememberMyId(user.id);
+
+  // reset form
+  $("fName").value = ""; $("fMobile").value = ""; $("fRef").value = "";
+  document.querySelectorAll('input[name="gender"]').forEach(r => r.checked = false);
+  $("avatarBox").classList.remove("show");
+  curGender = ""; curSeed = 0;
+
+  openHome();
+};
+
+/* ---------- Home ---------- */
+function openHome(){
+  const me = getUser(DB.getSession());
+  if(!me){ show("hero"); return; }
+  $("meImg").src = avatarURI(me.gender, me.avatarSeed);
+  $("meName").innerHTML = esc(me.name) + badgeFor(me.id);
+  renderUsers();
+  applyView();
+  show("home");
+  if(activeView === "groups") renderGroups();
+  startChat();                 // real-time chat listener (sirf naye message) + laal dot
+  updateBadge();
+}
+function renderUsers(){
+  const grid = $("userGrid");
+  $("tabAll").classList.toggle("active", activeTab === "all");
+  $("tabLatest").classList.toggle("active", activeTab === "latest");
+  // All = local cache (newest upar) | Latest = is visit ke baad aaye naye profiles
+  const me = DB.getSession();
+  const list = (activeTab === "all" ? USERS : sessionNew).filter(u => u.id !== me);   // apni profile list me nahi
+  const ordered = activeTab === "all" ? topFirst(list) : list;
+  const users = ordered.slice(0, shown);
+  // Verified (badge wale) user ka apna card "All" me sabse upar
+  const meU = getUser(me);
+  const myCard = (activeTab === "all" && meU && badgeFor(meU.id)) ? `
+    <div class="card me-card">
+      <img src="${avatarURI(meU.gender,meU.avatarSeed)}" alt="${esc(meU.name)}" data-id="${meU.id}">
+      <div class="nm">${esc(meU.name)}${badgeFor(meU.id)}<span class="you-tag">You</span></div>
+      <span class="tag ${meU.gender==="Female"?"f":"m"}">${meU.gender==="Female"?"👩":"👨"} ${meU.gender}</span>
+      <button class="btn-me" data-id="${meU.id}">मेरी प्रोफाइल</button>
+    </div>` : "";
+  $("moreWrap").style.display = (list.length > shown || (activeTab === "all" && hasMoreOld)) ? "" : "none";
+  if(!users.length && !myCard){
+    grid.innerHTML = '<div class="empty"><b>💞</b>' +
+      (activeTab === "all" ? "No members yet." : "No new members yet.") + '</div>';
+    return;
+  }
+  grid.innerHTML = users.map(u => `
+    <div class="card">
+      <img src="${avatarURI(u.gender,u.avatarSeed)}" alt="${esc(u.name)}" data-id="${u.id}">
+      <div class="nm">${esc(u.name)}${badgeFor(u.id)}${isBoosted(u) ? '<span class="boost-tag">\u26A1 Top</span>' : ""}</div>
+      <span class="tag ${u.gender==="Female"?"f":"m"}">${u.gender==="Female"?"👩":"👨"} ${u.gender}</span>
+      <a class="btn-chat" href="${waLink(u)}" target="_blank" rel="noopener">Connecting <span class="wa-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span></a>
+    </div>`).join("");
+  if(myCard) grid.insertAdjacentHTML("afterbegin", myCard);
+  grid.querySelectorAll(".btn-me").forEach(b => b.onclick = () => openProfile(b.dataset.id));
+  grid.querySelectorAll("img").forEach(img => img.onclick = () => openProfile(img.dataset.id));
+}
+$("meChip").onclick = () => openProfile(DB.getSession());
+
+/* ---------- Profile view ---------- */
+const ICON_VENUS = '<svg viewBox="0 0 24 24"><path d="M12 2a6 6 0 00-1 11.92V16H8v2h3v4h2v-4h3v-2h-3v-2.08A6 6 0 0012 2zm0 2a4 4 0 110 8 4 4 0 010-8z"/></svg>';
+const ICON_MARS  = '<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><circle cx="10" cy="14" r="5"/><path d="M14 10l6-6M15 4h5v5"/></svg>';
+let profFrom = "";   // profile kahan se khuli: "community" ho to back par wapas Community
+function openProfile(id){
+  const u = getUser(id);
+  if(!u) return;
+  const cur = document.querySelector(".screen.active");
+  profFrom = (cur && cur.id !== "profile") ? cur.id : profFrom;
+  const isMe = id === DB.getSession();
+  $("pfImg").src = avatarURI(u.gender, u.avatarSeed);
+  $("pfName").innerHTML = esc(u.name) + badgeFor(u.id);
+  $("pfGender").textContent = u.gender;
+  $("pfGenderIc").innerHTML = u.gender === "Female" ? ICON_VENUS : ICON_MARS;
+  $("pfMobile").textContent = "+" + u.dial + " " + u.mobile;
+  $("pfCountry").textContent = u.country;
+  $("pfJoined").textContent = fmtDate(u.createdAt);
+  const tag = $("pfTag");
+  tag.className = "tag " + (u.gender==="Female" ? "f" : "m");
+  tag.textContent = (u.gender==="Female" ? "👩 " : "👨 ") + u.gender;
+  $("pfChat").href = waLink(u);
+  $("pfBody").className = "pf-body " + (isMe ? "is-own" : "is-other");
+  show("profile");
+  try{ history.pushState({ pf: 1 }, ""); }catch(e){}   // phone ka back button bhi kaam kare
+}
+window.addEventListener("popstate", () => {
+  const a = document.querySelector(".screen.active");
+  if(a && a.id === "profile" && profFrom === "community"){ profFrom = ""; resumeCommunity(); return; }
+  if(a && (a.id === "profile" || a.id === "addGroup" || a.id === "verify" || a.id === "community")) openHome();
+});
+$("profBack").onclick = () => {
+  if(history.state && history.state.pf) history.back();
+  else if(profFrom === "community"){ profFrom = ""; resumeCommunity(); }
+  else openHome();
+};
+/* ---------- Logout = permanent delete: profile + saare messages (Firebase + phone). Groups jaise the waise rahenge ---------- */
+let loggingOut = false;
+$("logoutBtn").onclick = async () => {
+  if(loggingOut) return;
+  const me = DB.getSession();
+  if(!me){ show("hero"); return; }
+  if(!confirm("लॉगआउट करने पर आपकी प्रोफाइल और आपके सभी मैसेज हमेशा के लिए डिलीट हो जाएँगे। यह वापस नहीं होगा। (ग्रुप्स डिलीट नहीं होंगे।)\n\nक्या आप लॉगआउट करना चाहते हैं?")) return;
+  loggingOut = true;
+  const btn = $("logoutBtn"), label = btn.innerHTML;
+  btn.disabled = true; btn.textContent = "Deleting...";
+  stopChat();                                           // delete ke beech naya message wapas save na ho
+  try{
+    const F = await getFB();
+    const snap = await F.getDocs(F.query(F.collection(F.fs, "messages"), F.where("uid", "==", me), F.limit(500)));
+    await Promise.all(snap.docs.map(d => F.deleteDoc(d.ref)));      // is user ke saare messages
+    await F.deleteDoc(F.doc(F.fs, "users", me));                    // profile card
+  }catch(e){
+    console.error(e);
+    if(!confirm("Firebase से डेटा डिलीट नहीं हो पाया (इंटरनेट या Firestore rules)।\nफिर भी इस फोन से लॉगआउट करें?\n\nनहीं चुनने पर आप लॉगिन ही रहेंगे।")){
+      btn.disabled = false; btn.innerHTML = label; loggingOut = false;
+      startChat();
+      return;
+    }
+  }
+  // phone se bhi hatao: profile + messages
+  TOTAL = Math.max(0, TOTAL - 1); lsSet("gc_total", String(TOTAL));
+  USERS = USERS.filter(u => u.id !== me); sessionNew = sessionNew.filter(u => u.id !== me); saveCache();
+  CHAT = CHAT.filter(m => m.uid !== me); saveChat();
+  DB.clearSession();
+  btn.disabled = false; btn.innerHTML = label; loggingOut = false;
+  updateBadge();
+  show("hero");
+};
+
+/* ---------- Firebase sync (ek waqt me ek hi call) ---------- */
+let syncQueue = Promise.resolve();
+function syncNow(markAsNew){
+  const p = syncQueue.catch(() => {}).then(async () => {
+    const fresh = await DB.fetchNew();
+    if(markAsNew){
+      fresh.forEach(u => { if(!sessionNew.some(x => x.id === u.id)) sessionNew.push(u); });
+      sessionNew.sort((a, b) => b.createdAt - a.createdAt);
+    }
+    return fresh;
+  });
+  syncQueue = p;
+  return p;
+}
+let statusTimer = null;
+function setStatus(t, autoClear){
+  $("syncStatus").textContent = t;
+  clearTimeout(statusTimer);
+  if(autoClear) statusTimer = setTimeout(() => { $("syncStatus").textContent = ""; }, 2500);
+}
+
+/* ---------- Tabs: All / Latest ---------- */
+$("tabAll").onclick = () => { activeTab = "all"; shown = PAGE; setStatus(""); renderUsers(); };
+$("tabLatest").onclick = async () => {
+  activeTab = "latest"; shown = PAGE; renderUsers();
+  setStatus("Checking for new members...");
+  try{
+    const fresh = await syncNow(true);        // Firebase se sirf naye profiles
+    setStatus(fresh.length ? "New members added ✨" : "You're up to date", true);
+  }catch(e){
+    console.error(e);
+    setStatus("Could not check. Please check your internet.", true);
+  }
+  renderUsers();                              // Latest + All dono update
+};
+$("moreBtn").onclick = async () => {
+  shown += PAGE;
+  const me = DB.getSession();
+  const have = USERS.filter(u => u.id !== me).length;
+  if(activeTab === "all" && have < shown && hasMoreOld){       // cache khatam: Firebase se agle 20 purane
+    const b = $("moreBtn"); b.disabled = true; b.textContent = "Loading...";
+    try{ await DB.fetchOlder(); }
+    catch(e){ console.error(e); toast("Could not load more. Please check your internet."); }
+    b.disabled = false; b.textContent = "Show more";
+  }
+  renderUsers();
+};
+
+
+/* ==========================================================
+   GROUPS  (koi bhi group link; ek user din me sirf 2 groups)
+   ========================================================== */
+const G_KEY = "gc_groups_v1", G_PAGE = 30;
+let GROUPS = [], gLastSync = 0, gShown = G_PAGE, activeView = "members";
+let sharedGid = "", sharedHL = false;   // share-link se aaya group + uska 3-4 sec ka glow
+
+function loadGroupsCache(){
+  try{
+    const c = JSON.parse(localStorage.getItem(G_KEY));
+    if(c && Array.isArray(c.groups)){ GROUPS = c.groups; gLastSync = c.lastSync || 0; sortGroups(); }
+  }catch(e){ GROUPS = []; gLastSync = 0; }
+}
+function saveGroupsCache(){
+  try{ localStorage.setItem(G_KEY, JSON.stringify({ groups: GROUPS, lastSync: gLastSync })); }catch(e){}
+}
+function sortGroups(){ GROUPS.sort((a, b) => b.createdAt - a.createdAt); }
+/* sirf http/https link maane jaate hain (javascript: jaise link kabhi nahi) */
+function safeUrl(u){
+  try{ const x = new URL(String(u).trim()); return (x.protocol === "https:" || x.protocol === "http:") ? x.href : ""; }
+  catch(e){ return ""; }
+}
+function platformOf(url){
+  let h = "";
+  try{ h = new URL(url).hostname.replace(/^www\./,"").toLowerCase(); }catch(e){}
+  if(/(^|\.)(whatsapp\.com|wa\.me)$/.test(h)) return { key:"whatsapp", label:"WhatsApp" };
+  if(/(^|\.)(t\.me|telegram\.me|telegram\.org)$/.test(h)) return { key:"telegram", label:"Telegram" };
+  if(/(^|\.)(discord\.gg|discord\.com|discord\.gg)$/.test(h)) return { key:"discord", label:"Discord" };
+  if(/(^|\.)instagram\.com$/.test(h)) return { key:"instagram", label:"Instagram" };
+  if(/(^|\.)(facebook\.com|fb\.com|fb\.me)$/.test(h)) return { key:"facebook", label:"Facebook" };
+  return { key:"link", label: h || "Link" };
+}
+const ICON_GROUP = '<svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>';
+const ICON_SHARE = '<svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>';
+const ICON_OPEN  = '<svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>';
+
+/* Firebase se sirf naye groups */
+async function fetchNewGroups(){
+  const F = await getFB();
+  const col = F.collection(F.fs, "groups");
+  const q = gLastSync
+    ? F.query(col, F.where("createdAt", ">", F.Timestamp.fromMillis(gLastSync + 1)), F.orderBy("createdAt", "desc"))
+    : F.query(col, F.orderBy("createdAt", "desc"), F.limit(200));
+  const snap = await F.getDocs(q);
+  let n = 0;
+  snap.docs.forEach(d => {
+    const g = d.data();
+    g.id = g.id || d.id;
+    g.createdAt = toMs(g.createdAt);
+    if(g.createdAt > gLastSync) gLastSync = g.createdAt;
+    const i = GROUPS.findIndex(x => x.id === g.id);
+    if(i >= 0) GROUPS[i] = g; else { GROUPS.push(g); n++; }
+  });
+  sortGroups(); saveGroupsCache();
+  return n;
+}
+let glowTimer = null;
+function renderGroups(){
+  prefetchGroupImg();
+  const grid = $("groupGrid");
+  const valid = GROUPS.filter(g => safeUrl(g.link));
+  if(sharedGid){                                   // share-link se aaya group sabse upar
+    const i = valid.findIndex(g => g.id === sharedGid);
+    if(i > 0){ const [g] = valid.splice(i, 1); valid.unshift(g); }
+  }
+  const list = valid.slice(0, gShown);
+  $("gMoreWrap").style.display = valid.length > gShown ? "" : "none";
+  if(!list.length){
+    grid.innerHTML = '<div class="empty"><b>👥</b>No groups yet. Be the first to add one!</div>';
+    return;
+  }
+  grid.innerHTML = list.map(g => {
+    const url = safeUrl(g.link), pl = platformOf(url);
+    const hl = sharedHL && g.id === sharedGid;
+    return `
+    <div class="gcard${hl ? " gshared" : ""}">
+      ${hl ? '<span class="g-badge">🔗 Shared with you</span>' : ""}
+      <div class="g-top">
+        <div class="g-ic pl-${pl.key}">${ICON_GROUP}</div>
+        <div class="g-info">
+          <div class="g-name">${esc(g.name)}</div>
+          <span class="g-chip pl-${pl.key}">${esc(pl.label)}</span>
+        </div>
+      </div>
+      ${g.desc ? `<p class="g-desc">${esc(g.desc)}</p>` : ""}
+      <div class="g-by">Added by ${esc(g.ownerName || "Member")} · ${fmtDate(g.createdAt)}</div>
+      <div class="g-actions">
+        <a class="btn-gjoin${hl ? " glow" : ""}" href="${esc(url)}" target="_blank" rel="noopener noreferrer nofollow ugc">Join Group ${ICON_OPEN}</a>
+        <button class="btn-gshare" data-id="${esc(g.id)}">${ICON_SHARE}Share</button>
+      </div>
+    </div>`;
+  }).join("");
+  grid.querySelectorAll(".btn-gshare").forEach(b => b.onclick = () => shareGroup(b.dataset.id));
+
+  // share-link wala group: Join button sirf 3-4 second chamke, phir normal
+  if(sharedHL && !glowTimer && $("home").classList.contains("active") && activeView === "groups" && grid.querySelector(".glow")){
+    glowTimer = setTimeout(() => {
+      sharedHL = false;
+      grid.querySelectorAll(".glow").forEach(e => e.classList.remove("glow"));
+      grid.querySelectorAll(".gshared").forEach(e => e.classList.remove("gshared"));
+      grid.querySelectorAll(".g-badge").forEach(e => e.remove());
+    }, 4000);
+  }
+}
+
+let gStatusTimer = null;
+function setGStatus(t, autoClear){
+  $("gStatus").textContent = t;
+  clearTimeout(gStatusTimer);
+  if(autoClear) gStatusTimer = setTimeout(() => { $("gStatus").textContent = ""; }, 2500);
+}
+/* Group share: raw group link nahi, apni website ka link jaata hai -> khulte hi Groups screen */
+/* Har group ka ek hi image (/group-og.jpg). Pehle se taiyaar rakhte hain taaki Share dabate hi khul jaaye.
+   FIX: agar image mili hi nahi (GitHub par naam galat) to server index.html laut deta hai.
+   Isliye ab check karte hain ki response sach me image hai; nahi to image chhod kar sirf text share hoga. */
+let groupImgFile = null, groupImgTried = false;
+function prefetchGroupImg(){
+  if(groupImgFile || groupImgTried || location.protocol.indexOf("http") !== 0) return;
+  groupImgTried = true;
+  fetch("/group-og.jpg").then(r => {
+    if(!r.ok || !(r.headers.get("content-type") || "").toLowerCase().startsWith("image/")) throw new Error("group-og.jpg not found");
+    return r.blob();
+  }).then(bl => {
+    if(!bl || !bl.size || !/^image\//.test(bl.type)) throw new Error("bad image");
+    groupImgFile = new File([bl], "girlsconnect-group.jpg", { type: "image/jpeg" });
+  }).catch(() => { /* image nahi mili: sirf text wala share chalega */ });
+}
+async function shareGroup(id){
+  const g = GROUPS.find(x => x.id === id);
+  if(!g) return;
+  const link = SITE_URL + "?g=" + encodeURIComponent(id) + (DB.getSession() ? "&ref=" + DB.getSession() : "");
+  const text = "\uD83D\uDC65 *" + g.name + "*\n" +
+    "\n\uD83D\uDC49 *ज्वाइन करें* \uD83D\uDC47\n" + link;
+
+  // 1) Phone ki share-sheet: image + text, WhatsApp / Instagram / Facebook sab me
+  try{
+    if(!groupImgFile) prefetchGroupImg();
+    if(groupImgFile && navigator.canShare && navigator.canShare({ files: [groupImgFile] })){
+      await navigator.share({ files: [groupImgFile], text });
+      return;
+    }
+  }catch(e){
+    if(e && e.name === "AbortError") return;        // user ne khud band kiya
+  }
+  // 2) Fallback: sirf WhatsApp text (image nahi)
+  const url = "https://wa.me/?text=" + encodeURIComponent(text);
+  if(!window.open(url, "_blank", "noopener")) location.href = url;
+}
+/* share-link wala group agar local cache me na ho to sirf wahi ek group Firebase se laao */
+async function ensureSharedGroup(){
+  if(!sharedGid || GROUPS.some(g => g.id === sharedGid)) return;
+  try{
+    const F = await getFB();
+    const d = await F.getDoc(F.doc(F.fs, "groups", sharedGid));
+    if(d.exists()){
+      const g = d.data(); g.id = g.id || d.id; g.createdAt = toMs(g.createdAt);
+      GROUPS.push(g); sortGroups(); saveGroupsCache();
+    }
+  }catch(e){ console.warn("shared group", e); }
+}
+/* Sirf website visit par: naye groups laao (cache me jo hain wo dobara nahi aate) */
+async function visitGroupSync(){
+  if(activeView === "groups") setGStatus("Checking for new groups...");
+  try{
+    const n = await fetchNewGroups();
+    await ensureSharedGroup();
+    if(activeView === "groups") setGStatus(n ? "New groups added ✨" : "", true);
+  }catch(e){
+    console.error(e);
+    if(activeView === "groups") setGStatus("Could not load groups. Check internet and Firestore rules.", true);
+    else await ensureSharedGroup();
+  }
+  if($("home").classList.contains("active") && activeView === "groups") renderGroups();
+}
+
+/* Members <-> Groups */
+function applyView(){
+  const g = activeView === "groups";
+  $("viewMembers").style.display = g ? "none" : "";
+  $("viewGroups").style.display  = g ? "" : "none";
+  $("fabAdd").style.display      = g ? "flex" : "none";
+  $("navMembers").classList.toggle("active", !g);
+  $("navGroups").classList.toggle("active", g);
+}
+function setView(v){
+  if(activeView === v){ window.scrollTo({ top:0, behavior:"smooth" }); return; }
+  activeView = v;
+  applyView();
+  window.scrollTo(0,0);
+  if(v === "groups"){ gShown = G_PAGE; renderGroups(); }          // sirf local cache se
+  else renderUsers();
+}
+$("navMembers").onclick = () => setView("members");
+$("navGroups").onclick  = () => setView("groups");
+$("gMoreBtn").onclick   = () => { gShown += G_PAGE; renderGroups(); };
+
+/* Add group page */
+function openAddGroup(){
+  $("gErr").textContent = "";
+  show("addGroup");
+  try{ history.pushState({ pf: 1 }, ""); }catch(e){}     // phone ka back button bhi kaam kare
+}
+$("fabAdd").onclick = openAddGroup;
+$("agBack").onclick = () => { if(history.state && history.state.pf) history.back(); else openHome(); };
+
+$("gSubmit").onclick = async () => {
+  const err = $("gErr"), btn = $("gSubmit");
+  err.textContent = "";
+  const me = getUser(DB.getSession());
+  if(!me){ err.textContent = "Please join first."; return; }
+  const name = $("gName").value.trim();
+  const desc = $("gDesc").value.trim();
+  let link = $("gLink").value.trim();
+  if(link && !/^[a-z][a-z0-9+.-]*:/i.test(link)) link = "https://" + link;   // https:// khud jod do
+  const url = safeUrl(link);
+
+  if(name.length < 2){ err.textContent = "Please enter the group name."; return; }
+  if(!url){ err.textContent = "Please enter a valid group link (starting with https://)."; return; }
+  if(GROUPS.some(g => safeUrl(g.link) === url)){ err.textContent = "This group link is already in the list."; return; }
+
+  btn.disabled = true; btn.textContent = "Please wait...";
+  try{
+    const g = {
+      id: "g" + Date.now() + Math.floor(Math.random()*1000),
+      name, link: url, desc,
+      platform: platformOf(url).key,
+      ownerId: me.id, ownerName: me.name,
+      createdAt: Date.now()
+    };
+    const F = await getFB();
+    await F.setDoc(F.doc(F.fs, "groups", g.id), { ...g, createdAt: F.serverTimestamp() });
+    GROUPS.push(g); sortGroups(); saveGroupsCache();
+    $("gName").value = ""; $("gLink").value = ""; $("gDesc").value = "";
+    gShown = G_PAGE;
+    activeView = "groups";
+    openHome();
+    setGStatus("Your group has been added ✨", true);
+  }catch(e){
+    console.error(e);
+    err.textContent = "Could not save. Check internet and Firestore rules.";
+  }finally{
+    btn.disabled = false; btn.textContent = "Submit Group";
+  }
+};
+
+/* ---------- Share on WhatsApp ---------- */
+const SITE_URL = location.protocol.indexOf("http") === 0
+  ? location.origin + location.pathname.replace(/index\.html$/, "").replace(/\/g\/[^/]*\/?$/, "/")
+  : "https://girlsconnect.pages.dev/";
+const SHARE_TEXT = "\uD83D\uDC96 *GirlsConnect*\nअगर आप भी सिंगल हैं तो आज ही आइए GirlsConnect प्लेटफॉर्म पर, यहाँ पर हज़ारों लोग आपसे बात करने को तैयार हैं। \uD83D\uDC47\n";
+function shareWhatsApp(){
+  const url = "https://wa.me/?text=" + encodeURIComponent(SHARE_TEXT + myShareLink() + codeLine());
+  if(!window.open(url, "_blank", "noopener")) location.href = url;
+}
+$("shareBtn").onclick = shareWhatsApp;
+
+/* ---------- Download App (Add to Home screen / PWA install) ---------- */
+function isStandalone(){
+  return window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+}
+if(isStandalone()) $("installBtn").style.display = "none";
+window.addEventListener("appinstalled", () => {
+  window.__installPrompt = null;
+  $("installBtn").style.display = "none";
+});
+$("installBtn").onclick = async () => {
+  const ev = window.__installPrompt;
+  if(ev){
+    ev.prompt();                                // browser ka install popup
+    try{ await ev.userChoice; }catch(e){}
+    window.__installPrompt = null;
+  }else{
+    $("installModal").classList.add("show");    // iPhone / popup na aaye to steps
+  }
+};
+$("installClose").onclick = () => $("installModal").classList.remove("show");
+$("installModal").onclick = e => { if(e.target.id === "installModal") $("installModal").classList.remove("show"); };
+
+if("serviceWorker" in navigator && location.protocol.indexOf("http") === 0){
+  navigator.serviceWorker.register("/sw.js").catch(err => console.warn("SW", err));
+}
+
+/* ---------- All/Latest bar: scroll ke saath-saath, usi speed se aati/jaati hai (jump nahi) ---------- */
+(function(){
+  const head = document.querySelector(".list-head");
+  const bar  = document.querySelector(".topbar");
+  const wrap = document.querySelector(".list-wrap");
+  const setTb = () => { if(bar.offsetHeight) document.documentElement.style.setProperty("--tbh", bar.offsetHeight + "px"); };
+  if(window.ResizeObserver) new ResizeObserver(setTb).observe(bar);
+  window.addEventListener("resize", setTb);
+
+  let lastY = window.scrollY, offset = 0;      // offset: 0 (poora dikhta) ... -H (poora chhupa)
+  function apply(){
+    head.style.transform = offset ? "translateY(" + offset + "px)" : "";
+    head.style.pointerEvents = offset < -head.offsetHeight * 0.6 ? "none" : "";
+  }
+  window.addEventListener("scroll", () => {
+    const y = window.scrollY;
+    if(!$("home").classList.contains("active")){ lastY = y; return; }
+    const H = head.offsetHeight + 4;
+    const stickyStart = Math.max(0, wrap.offsetTop - bar.offsetHeight);   // jahan se bar sticky hoti hai
+    const eff = Math.max(y, stickyStart) - Math.max(lastY, stickyStart);       // sirf sticky hone ke baad ka scroll
+    lastY = y;
+    offset = y <= stickyStart ? 0 : Math.min(0, Math.max(-H, offset - eff));   // neeche: chhupe, upar: usi speed se aaye
+    apply();
+  }, { passive:true });
+})();
+
+/* ---------- Bottom bar (Members/Groups) + Add Group button: scroll ke saath, usi speed se chhupte/aate hain ---------- */
+(function(){
+  const nav = document.querySelector(".bnav");
+  const fab = $("fabAdd");
+  let lastY = window.scrollY, off = 0;                 // off: 0 (dikhta) ... navH (poora neeche chhupa)
+  function apply(){
+    nav.style.transform = off ? "translateY(" + off + "px)" : "";
+    fab.style.transform = off ? "translateY(" + off + "px)" : "";
+  }
+  window.addEventListener("scroll", () => {
+    const y = window.scrollY, dy = y - lastY;
+    lastY = y;
+    if(!$("home").classList.contains("active")) return;
+    const H = nav.offsetHeight + 2;
+    off = y <= 0 ? 0 : Math.min(H, Math.max(0, off + dy));   // neeche scroll: chhupe | upar scroll: usi speed se wapas
+    apply();
+  }, { passive:true });
+})();
+
+/* ==========================================================
+   VERIFY + BOOST  (5 dost -> neela badge hamesha, profile 24 ghante top par)
+   ----------------------------------------------------------
+   - Har user ki apni link:  SITE_URL?ref=<uid>
+   - Naya banda link se aakar register kare to uske profile me referredBy = <uid> save hota hai.
+   - Ginti sabhi cached profiles se hoti hai (alag query nahi).
+   - Nahi ginte: khud ki link, same phone (devId), same mobile number, ya us phone par pehle se bana profile.
+   - Badge: 5 sahi dost -> hamesha. Top par: 5wen sahi dost ke judne se sirf ek baar 24 ghante.
+   ========================================================== */
+const BADGE = '<svg class="vb" viewBox="0 0 24 24" aria-label="Verified"><path fill="#3897f0" d="M12 1.5l2.4 1.8 3-.2 1.2 2.7 2.7 1.2-.2 3L22.9 12l-1.8 2.4.2 3-2.7 1.2-1.2 2.7-3-.2L12 22.9l-2.4-1.8-3 .2-1.2-2.7-2.7-1.2.2-3L1.1 12l1.8-2.4-.2-3 2.7-1.2 1.2-2.7 3 .2z"/><path d="M7.7 12.3l3 3 5.6-6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const NEED = 5, BOOST_MS = 24 * 3600 * 1000;
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+function getDevId(){
+  let d = lsGet("gc_dev");
+  if(!d){ d = "d" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); lsSet("gc_dev", d); }
+  return d;
+}
+function myIds(){ try{ return JSON.parse(lsGet("gc_my_ids")) || []; }catch(e){ return []; } }
+function rememberMyId(id){
+  const a = myIds(); if(!a.includes(id)) a.push(id);
+  lsSet("gc_my_ids", JSON.stringify(a));
+  try{ localStorage.removeItem("gc_ref"); }catch(e){}
+}
+/* link se aaya ref: sirf us phone ko jo abhi tak register nahi hua */
+(function(){
+  try{
+    const r = new URLSearchParams(location.search).get("ref");
+    if(r && /^u[0-9]+$/.test(r) && !DB.getSession() && !myIds().length && !lsGet("gc_ref")) lsSet("gc_ref", r);
+  }catch(e){}
+})();
+function getRefForNewUser(){
+  if(myIds().length) return "";                 // is phone par pehle se profile bana hai
+  const r = codeToId($("fRef").value) || lsGet("gc_ref") || "";
+  return /^u[0-9]+$/.test(r) ? r : "";
+}
+function normMobile(u){ return String(u.dial) + String(u.mobile).replace(/\D/g, "").replace(/^0+/, ""); }
+
+let REF = {}, refKey = "";
+function computeRefs(){
+  const key = USERS.length + ":" + lastSync;
+  if(key === refKey) return;
+  refKey = key;
+  const byId = {}, by = {};
+  USERS.forEach(u => { byId[u.id] = u; });
+  USERS.forEach(u => { if(u.referredBy && byId[u.referredBy]) (by[u.referredBy] = by[u.referredBy] || []).push(u); });
+  REF = {};
+  Object.keys(by).forEach(rid => {
+    const owner = byId[rid], om = normMobile(owner);
+    const seenD = new Set(), seenM = new Set(), ok = [];
+    by[rid].sort((a, b) => a.createdAt - b.createdAt).forEach(f => {
+      const m = normMobile(f);
+      if(f.id === rid || m === om) return;                                   // khud ya apna hi number
+      if(owner.devId && f.devId && owner.devId === f.devId) return;          // usi phone se
+      if(f.devId && seenD.has(f.devId)) return;                              // ek phone ek baar
+      if(seenM.has(m)) return;                                               // ek number ek baar
+      if(f.devId) seenD.add(f.devId);
+      seenM.add(m); ok.push(f);
+    });
+    const n = ok.length;
+    REF[rid] = { count: n, verified: n >= NEED, boostUntil: n >= NEED ? ok[NEED - 1].createdAt + BOOST_MS : 0, friends: ok };
+  });
+}
+function badgeFor(id){ computeRefs(); return REF[id] && REF[id].verified ? BADGE : ""; }
+function isBoosted(u){ computeRefs(); const r = REF[u.id]; return !!(r && r.verified && r.boostUntil > Date.now()); }
+function topFirst(list){
+  computeRefs();
+  const b = [], rest = [];
+  list.forEach(u => (isBoosted(u) ? b : rest).push(u));
+  b.sort((x, y) => REF[y.id].boostUntil - REF[x.id].boostUntil);
+  return b.concat(rest);
+}
+function idToCode(id){ return "GC" + String(id).replace(/^u/, ""); }
+function codeToId(c){ const m = String(c || "").trim().toUpperCase().replace(/[\s-]/g, "").match(/^GC([0-9]{6,20})$/); return m ? "u" + m[1] : ""; }
+function codeLine(){ const s = DB.getSession(); return s ? "\n\nरेफरल कोड: " + idToCode(s) : ""; }
+function myShareLink(){ const s = DB.getSession(); return s ? SITE_URL + "?ref=" + s : SITE_URL; }
+
+function leftText(ms){
+  const m = Math.max(1, Math.ceil(ms / 60000)), h = Math.floor(m / 60), mm = m % 60;
+  return (h ? h + " घंटे " : "") + mm + " मिनट";
+}
+function renderVerify(){
+  const me = getUser(DB.getSession());
+  if(!me) return;
+  computeRefs();
+  const st = REF[me.id] || { count: 0, verified: false, boostUntil: 0, friends: [] };
+  const left = st.boostUntil - Date.now();
+  $("vfImg").src = avatarURI(me.gender, me.avatarSeed);
+  $("vfName").innerHTML = esc(me.name) + (st.verified ? BADGE : "");
+  $("vfCount").textContent = st.count >= NEED ? st.count + " दोस्त जुड़े 🎉" : st.count + " / " + NEED + " दोस्त जुड़े";
+  $("vfSeg").innerHTML = [0, 1, 2, 3, 4].map(i => '<i class="' + (i < st.count ? "on" : "") + '"></i>').join("");
+  $("vfFriends").innerHTML = st.friends.map(f =>
+    '<div class="vf-fr"><img src="' + avatarURI(f.gender, f.avatarSeed) + '" alt=""><span>' + esc(f.name) + '</span></div>').join("");
+  let html = "";
+  if(st.verified){
+    html += '<div class="vf-state ok">' + BADGE + '<span>आप वेरिफाइड हैं। यह बैज अब हमेशा के लिए आपके साथ है।</span></div>';
+    html += left > 0
+      ? '<div class="vf-state boost"><span>⚡</span><span>आपकी प्रोफाइल अभी सबसे ऊपर है। ' + leftText(left) + ' बाकी।</span></div>'
+      : '<div class="vf-state todo"><span>⚡</span><span>आपका 24 घंटे का टॉप समय पूरा हो चुका है। नीला ✔ बैज हमेशा आपके साथ रहेगा।</span></div>';
+  }else{
+    html += '<div class="vf-state todo"><span>🎯</span><span>नीला ✔ पाने के लिए अभी ' + (NEED - st.count) + ' दोस्त और चाहिए।</span></div>';
+  }
+  $("vfState").innerHTML = html;
+  $("vfLink").value = idToCode(me.id);
+}
+let vfTimer = null;
+function openVerify(){
+  if(!DB.getSession()) return;
+  renderVerify();
+  show("verify");
+  try{ history.pushState({ pf: 1 }, ""); }catch(e){}
+  syncNow(false).then(() => { if($("verify").classList.contains("active")) renderVerify(); }).catch(() => {});
+  if(!vfTimer) vfTimer = setInterval(() => { if($("verify").classList.contains("active")) renderVerify(); }, 30000);
+}
+$("verifyBtn").onclick = openVerify;
+$("profVerify").onclick = openVerify;
+$("vfBack").onclick = () => { if(history.state && history.state.pf) history.back(); else openHome(); };
+$("vfShare").onclick = shareWhatsApp;
+$("vfCopy").onclick = async () => {
+  const v = $("vfLink").value, b = $("vfCopy");
+  try{ await navigator.clipboard.writeText(v); }
+  catch(e){ $("vfLink").select(); try{ document.execCommand("copy"); }catch(_){} }
+  b.textContent = "Copied ✓";
+  setTimeout(() => { b.textContent = "Copy"; }, 1800);
+};
+
+if(lsGet("gc_ref")) $("fRef").value = idToCode(lsGet("gc_ref"));   // link se aaya code form me pehle se bhara
+
+/* ==========================================================
+   COMMUNITY  (WhatsApp jaisi khuli chat, sirf text)
+   ----------------------------------------------------------
+   - Naye message neeche. Real-time (onSnapshot) sirf Community screen khuli ho tab.
+   - Har message localStorage me bhi save (aakhri 300). Dobara kholne par Firebase se sirf
+     wahi message aate hain jo aakhri saved message ke baad aaye.
+   - 48 ghante: har message me expireAt (Firestore TTL se Firebase se hat jaata hai) aur
+     phone se hum khud hataate hain (load par + har 2 minute). 48 ghante se purane kabhi dikhte nahi.
+   - Real-time listener login ke baad har screen par chalta hai; Community band ho to naye message
+     par Community button ke upar laal dot aata hai, Community kholte hi gayab.
+   - Safety: gande shabd + link filter, jaldi-jaldi bhejne par rok, har message par Report.
+   ========================================================== */
+const C_KEY = "gc_chat_v1", C_TTL = 48 * 3600 * 1000, C_MAX = 500, C_LEN = 300;
+let CHAT = [], cUnsub = null, cStarting = false, cSends = [], cLastText = "", cForce = false;
+let cHidden = new Set();
+try{ cHidden = new Set(JSON.parse(lsGet("gc_chat_hidden")) || []); }catch(e){}
+
+function loadChat(){
+  try{ const c = JSON.parse(localStorage.getItem(C_KEY)); CHAT = (c && Array.isArray(c.msgs)) ? c.msgs : []; }
+  catch(e){ CHAT = []; }
+  pruneChat();
+}
+function saveChat(){
+  try{ localStorage.setItem(C_KEY, JSON.stringify({ msgs: CHAT })); }
+  catch(e){ try{ CHAT = CHAT.slice(-80); localStorage.setItem(C_KEY, JSON.stringify({ msgs: CHAT })); }catch(_){} }
+}
+function pruneChat(){                                   // 48 ghante se purane + 500 se zyada hatao
+  const cut = Date.now() - C_TTL, n = CHAT.length;
+  CHAT = CHAT.filter(m => m && m.createdAt > cut);
+  if(CHAT.length > C_MAX) CHAT = CHAT.slice(-C_MAX);
+  return CHAT.length !== n;
+}
+function toast(t){
+  const e = $("toast"); e.textContent = t; e.classList.add("show");
+  clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove("show"), 2600);
+}
+function setCStatus(t){ $("cStatus").textContent = t; }
+
+/* ---- filter ---- */
+const squeezeRep = w => w.replace(/(.)\1+/g, "$1");
+const BAD_SUB = ["madarchod","behenchod","bhenchod","bhosdi","bhosad","chutiya","chutiye","gandu","harami","haramkhor","kutta","kamina","randwa","fuck","bitch","asshole","slut","whore","pussy","motherfucker","मादरचोद","बहनचोद","भोसड़ी","भोसडी","चूतिया","चुतिया","गांडू","हरामी","हरामखोर","कमीना","रंडवा"].map(squeezeRep);
+const BAD_WORD = new Set(["lund","lauda","laude","chut","gaand","gand","randi","bsdk","mc","bc","dick","cock","sex","porn","लंड","लौड़ा","चूत","गांड","रंडी","सेक्स"].map(squeezeRep));
+function chatCheck(t){
+  if(/(https?:\/\/|www\.|\b[a-z0-9-]+\.(com|in|net|org|me|ly|xyz|link|app|co|tk)\b|t\.me|wa\.me|chat\.whatsapp)/i.test(t))
+    return "लिंक यहाँ मना है। ग्रुप की लिंक Groups में जोड़ें।";
+  const low = t.toLowerCase().replace(/@/g, "a").replace(/\$/g, "s").replace(/0/g, "o").replace(/1/g, "i").replace(/3/g, "e");
+  const flat = squeezeRep(low.replace(/[^a-zऀ-ॿ]+/g, ""));
+  if(BAD_SUB.some(w => flat.includes(w))) return "ऐसे शब्द यहाँ मना हैं। कृपया सभ्य भाषा लिखें।";
+  if(low.split(/[^a-zऀ-ॿ]+/).some(w => w && BAD_WORD.has(squeezeRep(w)))) return "ऐसे शब्द यहाँ मना हैं। कृपया सभ्य भाषा लिखें।";
+  return "";
+}
+
+/* ---- render ---- */
+const ICON_FLAG = '<svg viewBox="0 0 24 24"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg>';
+function nameColor(uid){ let h = 0; for(const c of String(uid)) h = (h * 31 + c.charCodeAt(0)) % 360; return "hsl(" + h + ",58%,40%)"; }
+function chatDay(ms){
+  const d = new Date(ms), t = new Date(), y = new Date(Date.now() - 86400000);
+  if(d.toDateString() === t.toDateString()) return "आज";
+  if(d.toDateString() === y.toDateString()) return "कल";
+  return fmtDate(ms);
+}
+function chatTime(ms){ return new Date(ms).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); }
+function renderChat(force, notify){
+  const box = $("cMsgs"), me = DB.getSession();
+  const near = force || (box.scrollHeight - box.scrollTop - box.clientHeight < 140);
+  const cut = Date.now() - C_TTL;
+  const list = CHAT.filter(m => m.createdAt > cut && !cHidden.has(m.id));
+  if(!list.length){
+    box.innerHTML = '<div class="c-empty"><b>💬</b>अभी कोई मैसेज नहीं है।<br>पहला मैसेज आप भेजिए 👋</div>';
+    return;
+  }
+  let html = "", lastDay = "", prev = null;
+  list.forEach(m => {
+    const day = new Date(m.createdAt).toDateString();
+    if(day !== lastDay){ html += '<div class="c-day"><span>' + chatDay(m.createdAt) + '</span></div>'; lastDay = day; prev = null; }
+    const first = !prev || prev.uid !== m.uid || m.createdAt - prev.createdAt > 5 * 60000;
+    prev = m;
+    if(m.uid === me){
+      html += '<div class="c-row own' + (first ? " first" : "") + '"><div class="c-bub"><div class="c-tx">' + esc(m.text) +
+        '</div><div class="c-meta"><span>' + chatTime(m.createdAt) + '</span></div></div></div>';
+    }else{
+      html += '<div class="c-row other' + (first ? " first" : "") + '">' +
+        (first ? '<img class="c-av" data-uid="' + esc(m.uid) + '" src="' + avatarURI(m.gender, m.avatarSeed) + '" alt="">' : '<span class="c-av-sp"></span>') +
+        '<div class="c-bub">' +
+        (first ? '<div class="c-nm" data-uid="' + esc(m.uid) + '" style="color:' + nameColor(m.uid) + '">' + esc(m.name) + badgeFor(m.uid) + '</div>' : "") +
+        '<div class="c-tx">' + esc(m.text) + '</div>' +
+        '<div class="c-meta"><span>' + chatTime(m.createdAt) + '</span><button class="c-rep" data-id="' + esc(m.id) + '" aria-label="Report">' + ICON_FLAG + '</button></div>' +
+        '</div></div>';
+    }
+  });
+  box.innerHTML = html;
+  if(near){ box.scrollTop = box.scrollHeight; $("cNew").style.display = "none"; }
+  else if(notify) $("cNew").style.display = "block";
+}
+$("cMsgs").addEventListener("click", e => {
+  const rep = e.target.closest(".c-rep");
+  if(rep){ reportMsg(rep.dataset.id); return; }
+  const who = e.target.closest("[data-uid]");
+  if(who){
+    if(getUser(who.dataset.uid)) openProfile(who.dataset.uid);
+    else toast("इस सदस्य की प्रोफाइल अभी लोड नहीं हुई।");
+  }
+});
+$("cMsgs").addEventListener("scroll", () => {
+  const b = $("cMsgs");
+  if(b.scrollHeight - b.scrollTop - b.clientHeight < 60) $("cNew").style.display = "none";
+}, { passive: true });
+$("cNew").onclick = () => { const b = $("cMsgs"); b.scrollTop = b.scrollHeight; $("cNew").style.display = "none"; };
+
+/* ---- total members (Firestore count: profiles download kiye bina, sirf ek number) ---- */
+let TOTAL = Number(lsGet("gc_total")) || 0, totalAt = 0;
+function setCSub(){ $("cSub").textContent = Math.max(TOTAL, USERS.length) + " सदस्य · खुली चैट"; }
+async function refreshTotal(){
+  if(Date.now() - totalAt < 60000) return;               // 1 minute me ek baar se zyada nahi
+  totalAt = Date.now();
+  try{
+    const F = await getFB();
+    const snap = await F.getCountFromServer(F.collection(F.fs, "users"));
+    TOTAL = snap.data().count;
+    lsSet("gc_total", String(TOTAL));
+    if($("community").classList.contains("active")) setCSub();
+  }catch(e){ totalAt = 0; console.warn("count", e); }
+}
+
+/* ---- laal dot (unread) ---- */
+const C_SEEN = "gc_chat_seen";
+const cSeen = () => Number(lsGet(C_SEEN)) || 0;
+function updateBadge(){
+  const b = $("cBadge"); if(!b) return;
+  const me = DB.getSession();
+  const on = !!me && !$("community").classList.contains("active") &&
+    CHAT.some(m => m.uid !== me && m.createdAt > cSeen() && !cHidden.has(m.id));
+  b.style.display = on ? "block" : "none";
+}
+function markSeen(){                       // Community dekh li: dot gayab (chahe 1 message ho ya 100)
+  const last = CHAT.length ? CHAT[CHAT.length - 1].createdAt : 0;
+  if(last > cSeen()) lsSet(C_SEEN, String(last));
+  updateBadge();
+}
+
+/* ---- real-time ---- */
+async function startChat(){
+  if(cUnsub || cStarting || !DB.getSession()) return;
+  cStarting = true; setCStatus("");
+  try{
+    const F = await getFB();
+    if(!DB.getSession()) return;
+    const since = Math.max(Date.now() - C_TTL, CHAT.length ? CHAT[CHAT.length - 1].createdAt : 0);
+    const q = F.query(F.collection(F.fs, "messages"),
+      F.where("createdAt", ">=", F.Timestamp.fromMillis(since)),
+      F.orderBy("createdAt", "asc"), F.limitToLast(150));
+    cUnsub = F.onSnapshot(q, snap => {
+      const me = DB.getSession(), byId = new Map(CHAT.map(m => [m.id, m]));
+      let changed = false, fromOthers = false, own = false;
+      snap.docChanges().forEach(c => {
+        if(c.type === "removed") return;                       // TTL / window se hate: local history rehne do
+        const m = c.doc.data({ serverTimestamps: "estimate" });
+        m.id = c.doc.id; m.createdAt = toMs(m.createdAt); delete m.expireAt;
+        if(!m.createdAt) return;
+        const old = byId.get(m.id);
+        if(!old || old.createdAt !== m.createdAt || old.text !== m.text){
+          byId.set(m.id, m); changed = true;
+          if(m.uid === me) own = true; else if(!old) fromOthers = true;
+        }
+      });
+      if(!changed) return;
+      CHAT = [...byId.values()].sort((a, b) => a.createdAt - b.createdAt || (a.id < b.id ? -1 : 1));
+      pruneChat(); saveChat();                              // har naya message turant localStorage me
+      if($("community").classList.contains("active")){
+        renderChat(own && cForce, fromOthers);
+        markSeen();
+      }else updateBadge();                                   // dusri screen par: laal dot
+      if(own) cForce = false;
+      setCStatus("");
+    }, err => {
+      console.error(err); cUnsub = null;
+      setCStatus("कनेक्शन में दिक्कत। पुराने मैसेज दिख रहे हैं।");
+      setTimeout(startChat, 30000);                          // 30 sec baad dobara koshish
+    });
+  }catch(e){
+    console.error(e);
+    setCStatus("कनेक्शन नहीं मिला। पुराने मैसेज दिख रहे हैं।");
+  }finally{ cStarting = false; }
+}
+function stopChat(){ if(cUnsub){ try{ cUnsub(); }catch(e){} cUnsub = null; } }
+
+/* ---- screen ---- */
+function kbOverlay(){}   // purana virtualKeyboard tareeka hata diya (Chrome me input gayab kar raha tha)
+function sizeChat(){
+  // Chrome me layout viewport khud keyboard ke saath chhota hota hai (position:fixed; top:0; bottom:0).
+  // Jin browsers/WebView me keyboard upar se dhakta hai (resize nahi), wahan neeche se utni jagah chhodte hain.
+  const el = $("community"), v = window.visualViewport;
+  let gap = 0;
+  if(v) gap = Math.max(0, Math.round(window.innerHeight - v.height - v.offsetTop));
+  if(gap < 80) gap = 0;               // URL bar jaise chhote badlav ignore
+  el.style.top = "0px"; el.style.height = "auto"; el.style.bottom = gap + "px";
+}
+function chatToBottom(){ const b = $("cMsgs"); b.scrollTop = b.scrollHeight; }
+function settleChat(){                  // keyboard animation ke dauran kuch der tak size theek karte raho
+  const t0 = Date.now();
+  (function tick(){
+    if(!$("community").classList.contains("active")) return;
+    sizeChat(); chatToBottom();
+    if(Date.now() - t0 < 700) requestAnimationFrame(tick);
+  })();
+}
+function openCommunity(){
+  if(!DB.getSession()) return;
+  pruneChat();
+  setCSub(); refreshTotal();          // pehle saved number, phir Firebase se asli total
+  show("community");
+  kbOverlay(true);
+  try{ history.pushState({ pf: 1 }, ""); }catch(e){}
+  sizeChat();
+  renderChat(true);
+  markSeen();                  // laal dot turant gayab
+  startChat();
+}
+function resumeCommunity(){             // Profile se back: seedha Community par
+  show("community");
+  kbOverlay(true);
+  sizeChat();
+  renderChat(true);
+  markSeen();
+}
+$("navCommunity").onclick = openCommunity;
+$("cBack").onclick = () => { if(history.state && history.state.pf) history.back(); else openHome(); };
+{
+  const vf = () => { if($("community").classList.contains("active")) settleChat(); };
+  if(window.visualViewport){
+    window.visualViewport.addEventListener("resize", vf);
+    window.visualViewport.addEventListener("scroll", sizeChat);
+  }
+  window.addEventListener("resize", vf);
+  $("cInput").addEventListener("focus", () => { if($("community").classList.contains("active")) settleChat(); });
+  $("cInput").addEventListener("blur", () => setTimeout(() => { if($("community").classList.contains("active")) sizeChat(); }, 150));
+}
+
+/* ---- send ---- */
+const cIn = $("cInput");
+function cFit(){
+  cIn.style.height = "auto"; cIn.style.height = Math.min(cIn.scrollHeight, 112) + "px";
+  const n = cIn.value.length;
+  $("cSend").disabled = !cIn.value.trim();
+  $("cCnt").textContent = n > 240 ? n + "/" + C_LEN : "";
+}
+cIn.addEventListener("input", cFit);
+cIn.addEventListener("keydown", e => {
+  if(e.key === "Enter" && !e.shiftKey && window.matchMedia("(hover:hover)").matches){ e.preventDefault(); sendChat(); }
+});
+$("cSend").addEventListener("pointerdown", e => e.preventDefault());   // keyboard band na ho
+$("cSend").onclick = sendChat;
+
+async function sendChat(){
+  const me = getUser(DB.getSession());
+  if(!me) return;
+  const t = cIn.value.replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+  if(!t) return;
+  const bad = chatCheck(t);
+  if(bad){ toast(bad); return; }
+  const now = Date.now();
+  cSends = cSends.filter(x => now - x < 60000);
+  const last = cSends[cSends.length - 1] || 0;
+  if(now - last < 3000){ toast("थोड़ा धीरे! कुछ सेकंड रुककर भेजिए।"); return; }
+  if(cSends.length >= 8){ toast("एक मिनट में 8 से ज़्यादा मैसेज नहीं भेज सकते।"); return; }
+  if(t === cLastText && now - last < 30000){ toast("वही मैसेज दोबारा न भेजें।"); return; }
+  cSends.push(now); cLastText = t;
+
+  const id = "m" + now + Math.floor(Math.random() * 1000);
+  const msg = { id, uid: me.id, name: me.name, gender: me.gender, avatarSeed: me.avatarSeed, text: t.slice(0, C_LEN), createdAt: now };
+  CHAT.push(msg); saveChat(); cForce = true; renderChat(true);   // turant dikhao + localStorage me save
+  cIn.value = ""; cFit(); cIn.focus();
+  try{
+    const F = await getFB();
+    await F.setDoc(F.doc(F.fs, "messages", id), {
+      id, uid: me.id, name: me.name, gender: me.gender, avatarSeed: me.avatarSeed, text: msg.text,
+      createdAt: F.serverTimestamp(), expireAt: F.Timestamp.fromMillis(Date.now() + C_TTL)
+    });
+    saveChat();
+  }catch(e){
+    console.error(e);
+    CHAT = CHAT.filter(x => x.id !== id); saveChat();          // bheja nahi gaya: hata do
+    renderChat(false);
+    cIn.value = t; cFit();
+    toast("मैसेज नहीं भेज पाए। इंटरनेट जाँचें।");
+  }
+}
+async function reportMsg(id){
+  const m = CHAT.find(x => x.id === id), me = DB.getSession();
+  if(!m || !me) return;
+  if(!confirm("इस मैसेज की रिपोर्ट करें? यह आपको दिखना बंद हो जाएगा.")) return;
+  cHidden.add(id);
+  lsSet("gc_chat_hidden", JSON.stringify([...cHidden].slice(-300)));
+  renderChat(false);
+  toast("रिपोर्ट भेज दी गई। धन्यवाद!");
+  try{
+    const F = await getFB();
+    await F.setDoc(F.doc(F.fs, "reports", id + "_" + me), {
+      msgId: id, reporterId: me, reportedUid: m.uid, text: String(m.text).slice(0, 300), createdAt: F.serverTimestamp()
+    });
+  }catch(e){ console.warn("report", e); }
+}
+
+/* shuru me aur har 2 minute par 48 ghante se purane message phone se hatao */
+loadChat();
+setInterval(() => {
+  if(pruneChat()){ saveChat(); if($("community").classList.contains("active")) renderChat(false); else updateBadge(); }
+}, 120000);
+if(lsGet(C_SEEN) === null) lsSet(C_SEEN, String(CHAT.length ? CHAT[CHAT.length - 1].createdAt : Date.now()));   // pehli baar: purane message par dot nahi
+
+/* ---------- Start: cache se turant kholo (shuruaati screen flash nahi hoti) ---------- */
+document.documentElement.classList.add("boot");
+loadCache();
+loadGroupsCache();
+(function(){                                   // share-link: ?g=<id> -> seedha Groups screen
+  const q = new URLSearchParams(location.search);
+  const m = location.pathname.match(/\/g\/(g[0-9]+)\/?$/);
+  const g = (m && m[1]) || q.get("g") || "";
+  if(/^g[0-9]+$/.test(g)){ sharedGid = g; sharedHL = true; }
+  if(sharedGid || q.get("v") === "groups") activeView = "groups";
+})();
+(function(){
+  const sid = DB.getSession();
+  if(sid && getUser(sid)) openHome();     // returning user: seedha home
+  else if(sid) show("boot");              // session hai par cache khali: sirf loader
+  else show("hero");                      // naya user
+})();
+requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.remove("boot")));
+
+visitGroupSync();                               // visit-time: sirf naye groups (top par aate hain)
+syncNow(false)                                  // visit-time update (ye "All" me jaayega)
+  .then(() => {
+    const sid = DB.getSession();
+    if($("home").classList.contains("active")) renderUsers();
+    else if($("boot").classList.contains("active")) { if(sid && getUser(sid)) openHome(); else show("hero"); }
+  })
+  .catch(err => {
+    console.error(err);
+    if($("boot").classList.contains("active")) show("hero");
+    else if($("home").classList.contains("active") && !USERS.length)
+      $("userGrid").innerHTML = '<div class="empty"><b>⚠️</b>Could not load members. Check internet and Firestore rules.</div>';
+  });
+</script>
+</body>
+</html>
